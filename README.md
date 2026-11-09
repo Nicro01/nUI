@@ -70,6 +70,29 @@ npm run build && php artisan optimize:clear
 - `php artisan nui:install` — Publica o arquivo de configuração e exibe o checklist de configuração.
 - `php artisan nui:setup-prefix` — Permite alterar o prefixo global dos componentes (ex: `ui`, `nui`).
 - `php artisan vendor:publish --tag=nui-config` — Publica o arquivo `config/nui.php`.
+- `php artisan nui:mcp` — Inicia o servidor MCP do nUI (veja abaixo).
+
+## Servidor MCP
+
+O pacote traz um servidor [MCP](https://modelcontextprotocol.io) para assistentes de IA. Ele responde a partir da versão instalada: props, exemplos, integração com Alpine e Livewire, subcomponentes e tokens do tema. Assim o assistente usa a API real em vez de adivinhar.
+
+No Claude Code, dentro do seu app:
+
+```bash
+claude mcp add nui -- php artisan nui:mcp
+```
+
+Ou declare no `.mcp.json` do projeto:
+
+```json
+{
+    "mcpServers": {
+        "nui": { "command": "php", "args": ["artisan", "nui:mcp"] }
+    }
+}
+```
+
+Ferramentas: `list_components`, `search_components`, `get_component`, `get_theme_tokens` e `get_guidelines`. O prompt `build_screen` monta uma tela usando só componentes do nUI.
 
 ## Uso
 

@@ -5,6 +5,7 @@ namespace Nicro\Nui;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nicro\Nui\Commands\InstallCommand;
+use Nicro\Nui\Commands\McpCommand;
 use Nicro\Nui\Commands\SetupPrefixCommand;
 
 class NuiServiceProvider extends ServiceProvider
@@ -37,6 +38,7 @@ class NuiServiceProvider extends ServiceProvider
             $this->commands([
                 SetupPrefixCommand::class,
                 InstallCommand::class,
+                McpCommand::class,
             ]);
         }
     }
@@ -76,6 +78,7 @@ class NuiServiceProvider extends ServiceProvider
 
         Blade::precompiler(function (string $string): string {
             $string = preg_replace('/<\s*nui:script\s*\/?>/i', '@nuiScript', $string);
+
             return preg_replace('/<\s*nui:styles?\s*\/?>/i', '@nuiStyles', $string);
         });
     }
@@ -92,7 +95,7 @@ class NuiServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath($path, 'nui');
 
         // If a custom prefix is configured (e.g. 'ui'), register it as well: <x-ui::...>
-        if (!empty($prefix) && $prefix !== 'nui') {
+        if (! empty($prefix) && $prefix !== 'nui') {
             Blade::anonymousComponentPath($path, $prefix);
         }
     }

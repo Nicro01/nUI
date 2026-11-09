@@ -17,7 +17,7 @@ class SetupPrefixCommand extends Command
 
         $configFile = config_path('nui.php');
 
-        if (!File::exists($configFile)) {
+        if (! File::exists($configFile)) {
             $this->call('vendor:publish', ['--tag' => 'nui-config']);
         }
 
