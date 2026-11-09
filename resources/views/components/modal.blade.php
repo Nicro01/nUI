@@ -43,6 +43,3 @@
         </x-nui::form>
     @endisset
 </dialog>
-
-
-

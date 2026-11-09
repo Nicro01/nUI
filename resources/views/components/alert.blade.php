@@ -48,5 +48,3 @@
         </x-nui::button>
     @endif
 </div>
-
-

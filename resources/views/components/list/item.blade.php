@@ -43,4 +43,3 @@
         <div class="flex min-w-0 max-w-[45%] shrink-0 items-center gap-2 pr-4 text-sm text-base-content/70">{{ $trailing }}</div>
     @endisset
 </li>
-

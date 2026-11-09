@@ -177,6 +177,70 @@ html:has(.nui-lightbox-dialog[open]) { overflow: hidden; }
     --nui-shadow-control: inset 0 1px 0 oklch(100% 0 0 / 0.25), inset 0 -2px 0 oklch(0% 0 0 / 0.3), 0 1px 2px oklch(0% 0 0 / 0.45);
 }
 
+/* nUI · iron: athletic performance theme for gyms, crossfit and sports facilities. */
+[data-theme='iron'] {
+    color-scheme: light;
+    --nui-base-100: oklch(100% 0 0);
+    --nui-base-200: oklch(97% 0.005 260);
+    --nui-base-300: oklch(89% 0.01 260);
+    --nui-base-content: oklch(18% 0.02 260);
+    --nui-primary: #ff5500;
+    --nui-primary-content: #ffffff;
+    --nui-secondary: #16191f;
+    --nui-secondary-content: #ffffff;
+    --nui-danger: oklch(54% 0.22 28);
+    --nui-danger-content: #ffffff;
+    --nui-success: oklch(58% 0.18 145);
+    --nui-success-content: #ffffff;
+    --nui-warning: oklch(75% 0.16 75);
+    --nui-warning-content: oklch(20% 0.04 70);
+    --nui-chart-1: #ff5500;
+    --nui-chart-2: #fb923c;
+    --nui-chart-3: #c2410c;
+    --nui-radius: 0.375rem;
+    --nui-radius-field: 0.3125rem;
+    --nui-border-width: 1.5px;
+    --nui-field-bg: oklch(100% 0 0);
+    --nui-field-border: oklch(89% 0.01 260);
+    --nui-field-border-width: 1.5px;
+    --nui-control-weight: 600;
+    --nui-shadow: 0 1px 3px oklch(15% 0.02 260 / 0.08);
+    --nui-shadow-inset: inset 0 1px 2px oklch(15% 0.02 260 / 0.08);
+    --nui-shadow-control: inset 0 1px 0 oklch(100% 0 0 / 0.2), inset 0 -2px 0 oklch(0% 0 0 / 0.25), 0 1px 2px oklch(15% 0.02 260 / 0.15);
+}
+
+/* nUI · iron-dark: dark performance aesthetic (night gym, iron plates, blaze energy). */
+[data-theme='iron-dark'] {
+    color-scheme: dark;
+    --nui-base-100: oklch(21% 0.012 260);
+    --nui-base-200: oklch(16% 0.01 260);
+    --nui-base-300: oklch(30% 0.015 260);
+    --nui-base-content: oklch(96% 0.005 90);
+    --nui-primary: #ff6b2b;
+    --nui-primary-content: #121417;
+    --nui-secondary: oklch(30% 0.015 260);
+    --nui-secondary-content: oklch(96% 0.005 90);
+    --nui-danger: oklch(64% 0.2 28);
+    --nui-danger-content: oklch(14% 0.03 28);
+    --nui-success: oklch(72% 0.18 145);
+    --nui-success-content: oklch(14% 0.03 145);
+    --nui-warning: oklch(80% 0.16 80);
+    --nui-warning-content: oklch(20% 0.05 70);
+    --nui-chart-1: #ff6b2b;
+    --nui-chart-2: #fba05a;
+    --nui-chart-3: #ea580c;
+    --nui-radius: 0.375rem;
+    --nui-radius-field: 0.3125rem;
+    --nui-border-width: 1.5px;
+    --nui-field-bg: oklch(21% 0.012 260);
+    --nui-field-border: oklch(30% 0.015 260);
+    --nui-field-border-width: 1.5px;
+    --nui-control-weight: 600;
+    --nui-shadow: 0 1px 3px oklch(0% 0 0 / 0.4);
+    --nui-shadow-inset: inset 0 1px 2px oklch(0% 0 0 / 0.4);
+    --nui-shadow-control: inset 0 1px 0 oklch(100% 0 0 / 0.2), inset 0 -2px 0 oklch(0% 0 0 / 0.35), 0 1px 2px oklch(0% 0 0 / 0.5);
+}
+
 /* Shared runtime bits for the Alpine-powered components. */
 [x-cloak] {
     display: none !important;
@@ -1226,6 +1290,20 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
     padding-inline: 0;
 }
 
+.nui-kanban-column,
+.nui-kanban-columns section {
+    background-color: color-mix(in oklch, var(--nui-base-300) 45%, var(--nui-base-200));
+    border: 1px solid var(--nui-base-300);
+}
+
+[data-theme='dark'] .nui-kanban-column,
+[data-theme='dark'] .nui-kanban-columns section,
+[data-theme='iron-dark'] .nui-kanban-column,
+[data-theme='iron-dark'] .nui-kanban-columns section {
+    background-color: color-mix(in oklch, var(--nui-base-300) 25%, var(--nui-base-200));
+    border: 1px solid color-mix(in oklch, var(--nui-base-300) 70%, transparent);
+}
+
 .nui-kanban-card[draggable='true'] { cursor: grab; }
 .nui-kanban-card[draggable='true']:active { cursor: grabbing; }
 @media (prefers-reduced-motion: no-preference) {
@@ -1273,35 +1351,32 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
 }
 
 /*
- * Table: a galley proof. The header sits on a heavier rule (the key-cap edge), body rows on hairlines,
- * numerals line up in tabular figures. Rows are tinted, never boxed.
+ * Table: compact application grid with fine column rules and a quiet header.
+ * Semantic tokens keep the grid consistent across application themes.
  * In the components layer, so utility classes on cells (px-2, text-*, font-*) still win.
  */
 @layer components {
 [data-nui-table] {
     --nui-table-rule: color-mix(in oklch, var(--nui-base-content) 9%, transparent);
-    --nui-table-head-rule: color-mix(in oklch, var(--nui-base-content) 22%, transparent);
-    --nui-table-pad-x: 1rem;
-    --nui-table-pad-y: 0.75rem;
+    --nui-table-head-rule: var(--nui-base-300);
+    --nui-table-pad-x: 0.625rem;
+    --nui-table-pad-y: 0.625rem;
 
     &[data-dense] {
-        --nui-table-pad-x: 0.75rem;
-        --nui-table-pad-y: 0.4375rem;
+        --nui-table-pad-y: 0.375rem;
+
+        & th, & td { height: 2.375rem; }
     }
 
     &[data-variant='plain'] {
-        --nui-table-pad-x: 0.75rem;
-
-        & th:first-child, & td:first-child { padding-inline-start: 0; }
-        & th:last-child, & td:last-child { padding-inline-end: 0; }
-        & thead th { background: transparent; }
+        border-radius: 0;
     }
 
     & table {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
         line-height: 1.4;
         font-variant-numeric: tabular-nums;
     }
@@ -1309,18 +1384,21 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
     & th, & td {
         padding: var(--nui-table-pad-y) var(--nui-table-pad-x);
         border-bottom: 1px solid var(--nui-table-rule);
+        border-inline-end: 1px solid var(--nui-table-rule);
         text-align: start;
         vertical-align: middle;
     }
 
+    & tr > :last-child { border-inline-end: 0; }
+
     & thead th {
-        padding-block: calc(var(--nui-table-pad-y) - 0.125rem);
-        border-bottom: 2px solid var(--nui-table-head-rule);
+        border-bottom: 1px solid var(--nui-table-head-rule);
         background: var(--nui-base-200);
         color: color-mix(in oklch, var(--nui-base-content) 74%, transparent);
-        font-size: 0.75rem;
+        font-size: 0.6875rem;
         font-weight: 600;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
         white-space: nowrap;
     }
 
@@ -1328,7 +1406,7 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
     & tbody tr:last-child > * { border-bottom: 0; }
 
     & tfoot td, & tfoot th {
-        border-top: 2px solid var(--nui-table-head-rule);
+        border-top: 1px solid var(--nui-table-head-rule);
         border-bottom: 0;
         font-weight: 600;
     }
@@ -1374,12 +1452,9 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
     & [data-nui-table-sort] {
         display: inline-flex;
         align-items: center;
-        gap: 0.25rem;
         margin: -0.25rem -0.375rem;
-        padding: 0.25rem 0.375rem;
         border-radius: min(var(--nui-radius-field), 0.375rem);
-        font: inherit;
-        color: inherit;
+        background: transparent;
         cursor: pointer;
         transition: color 150ms ease, background-color 150ms ease;
 
@@ -1397,6 +1472,22 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
     & th[aria-sort='ascending'] [data-down] { opacity: 0; transform: translateY(-2px); }
     & th[aria-sort='descending'] [data-up] { opacity: 0; transform: translateY(2px); }
 
+    & [data-nui-table-actions] {
+        position: sticky;
+        inset-inline-start: 0;
+        z-index: 1;
+        width: 1px;
+        white-space: nowrap;
+        background: var(--nui-base-100);
+    }
+    & thead [data-nui-table-actions] { z-index: 2; background: var(--nui-base-200); }
+    &[data-hover] tbody tr:hover > [data-nui-table-actions] {
+        background: color-mix(in oklch, var(--nui-base-content) 5%, var(--nui-base-100));
+    }
+    & tbody tr:has([data-nui-table-select]:checked) > [data-nui-table-actions] {
+        background: color-mix(in oklch, var(--nui-primary) 8%, var(--nui-base-100));
+    }
+
     /* Horizontal overflow fades at the edge that still has content; the region becomes focusable to scroll by keyboard. */
     & [data-nui-table-scroll] {
         scrollbar-width: thin;
@@ -1412,7 +1503,21 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
 }
 }
 
-/* Some rows selected: the header box fills and carries a drawn bar. Unlayered so it beats the checkbox utilities. */
+/* Keep the composed Button aligned with the column label instead of its control utilities. */
+[data-nui-table] [data-nui-table-sort] {
+    height: auto;
+    gap: 0.25rem;
+    padding: 0.25rem 0.375rem;
+    border: 0;
+    box-shadow: none;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+}
+[data-nui-table] [data-nui-table-sort]:active { transform: none; }
+
+/* Some rows selected: the header box fills and carries a drawn bar. */
 [data-nui-table] [data-nui-table-check] input:indeterminate {
     border-color: var(--nui-primary);
     background: linear-gradient(var(--nui-primary-content), var(--nui-primary-content)) center / 0.5rem 2px no-repeat, var(--nui-primary);
@@ -3188,3 +3293,23 @@ fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
     .nui-orders-stack > :last-child { border-radius: 4px 4px 0 0; }
     @media (prefers-reduced-motion: reduce) { .nui-orders-stack { animation: none; } }
 }
+
+/* Calendar grid: a ruled agenda with type-case headings and key-cap appointments. */
+.nui-calendar { overflow: hidden; border: var(--nui-border-width) solid var(--nui-base-300); border-radius: var(--nui-radius); background: var(--nui-base-100); box-shadow: var(--nui-shadow); }
+.nui-calendar-toolbar { padding: 1.125rem 1.25rem; border-bottom: 1px solid var(--nui-base-300); background: var(--nui-base-200); }
+.nui-calendar-title { margin: 0; font-family: var(--nui-font-display, var(--font-wood, inherit)); font-weight: var(--nui-font-display-weight, 500); font-size: 1.4rem; line-height: 1.2; }
+.nui-calendar-scroll { scrollbar-color: var(--nui-base-300) var(--nui-base-200); scrollbar-width: thin; }
+.nui-calendar-corner, .nui-calendar-day, .nui-calendar-hours { background: var(--nui-base-200); }
+.nui-calendar-corner, .nui-calendar-day { border-bottom: 2px solid var(--nui-base-300); }
+.nui-calendar-day-number { display: inline-grid; place-items: center; min-width: 2.5rem; min-height: 2.5rem; margin-top: .25rem; padding-inline: .25rem; border-radius: var(--nui-radius-field); font-family: var(--nui-font-display, var(--font-wood, inherit)); font-size: 1.85rem; line-height: 1; font-weight: var(--nui-font-display-weight, 500); }
+.nui-calendar-day[data-today='true'] .nui-calendar-day-number { background: var(--nui-secondary); color: var(--nui-secondary-content); box-shadow: var(--nui-shadow-control); }
+.nui-calendar-slot:not([data-hour-end='true']) { border-bottom-style: dashed !important; }
+.nui-calendar-slot[data-hour-end='true'] { border-bottom-color: var(--nui-base-300) !important; }
+.nui-calendar-slot:not(:disabled):hover { background: color-mix(in oklch, var(--nui-secondary) 12%, transparent); }
+.nui-calendar-slot[data-selected='true'] { background: color-mix(in oklch, var(--nui-secondary) 22%, transparent) !important; box-shadow: inset 0 0 0 2px var(--nui-primary) !important; }
+.nui-calendar > p:last-child { margin: 0; padding: .75rem 1.25rem; border-top: 1px solid var(--nui-base-300); background: var(--nui-base-200); }
+.nui-calendar-date-filter { padding: .875rem 1.25rem 1rem; border-bottom: 1px solid var(--nui-base-300); background: var(--nui-base-100); }
+.nui-calendar-scroll { cursor: grab; user-select: none; }
+.nui-calendar-scroll button { cursor: inherit; }
+.nui-calendar-scroll[data-panning='true'], .nui-calendar-scroll[data-panning='true'] button { cursor: grabbing; }
+.nui-calendar-day[data-cursor='true'] { border-bottom-color: var(--nui-primary); }

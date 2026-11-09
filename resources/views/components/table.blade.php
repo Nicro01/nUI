@@ -51,7 +51,7 @@
         'flex w-full min-w-0 flex-col overflow-hidden text-base-content',
         $variant === 'plain'
             ? ''
-            : 'rounded-nui bg-base-100 shadow-nui border-[length:var(--nui-border-width)] border-base-300 border-b-[3px] border-b-base-content/20',
+            : 'rounded-nui bg-base-100 border border-base-300',
     ]) }}
     id="{{ $id }}" data-nui-table data-variant="{{ $variant }}"
     @if ($striped) data-striped @endif @if ($hover) data-hover @endif
@@ -70,10 +70,13 @@
             this.total = this.boxes().length;
             this.sync(false);
             this.measure();
-            new ResizeObserver(() => this.measure()).observe(this.$refs.scroll);
+            this.resizeObserver = new ResizeObserver(() => this.measure());
+            this.resizeObserver.observe(this.$refs.scroll);
         },
+        destroy() { this.resizeObserver?.disconnect(); },
         measure() {
             const el = this.$refs.scroll;
+            if (!el) return;
             this.scrolls = el.scrollWidth > el.clientWidth + 1;
             this.fadeStart = Math.min(el.scrollLeft, 24);
             this.fadeEnd = Math.min(el.scrollWidth - el.clientWidth - el.scrollLeft, 24);

@@ -154,7 +154,7 @@
 
     <div data-lenis-prevent class="nui-kanban-columns flex min-w-0 snap-x gap-4 overflow-x-auto pb-4">
         <template x-for="column in columns" x-bind:key="column.id">
-            <section class="flex w-72 min-w-0 shrink-0 snap-start flex-col rounded-nui bg-base-200 p-3"
+            <section class="nui-kanban-column flex w-72 min-w-0 shrink-0 snap-start flex-col rounded-nui border border-base-300/80 bg-base-300/40 p-3 shadow-2xs"
                 x-bind:aria-label="column.title" x-bind:data-column="column.id"
                 x-on:dragover.prevent="if (dragged) over = column.id"
                 x-on:drop.prevent="move(dragged, column.id, column.cards.length)">
@@ -223,4 +223,3 @@
         </div>
     </x-nui::modal>
 </div>
-

@@ -138,8 +138,8 @@ class Server
             [
                 'name' => 'get_theme_tokens',
                 'title' => 'Tokens do tema',
-                'description' => 'Variáveis CSS (--nui-*) do tema claro ou escuro, para criar um tema próprio ou usar as cores certas.',
-                'inputSchema' => ['type' => 'object', 'properties' => ['theme' => ['type' => 'string', 'enum' => ['light', 'dark']]]],
+                'description' => 'Variáveis CSS (--nui-*) do tema claro, escuro ou atlético/iron, para criar um tema próprio ou usar as cores certas.',
+                'inputSchema' => ['type' => 'object', 'properties' => ['theme' => ['type' => 'string', 'enum' => ['light', 'dark', 'iron', 'iron-dark', 'fitness']]]],
                 'annotations' => $readOnly,
             ],
             [
@@ -290,10 +290,11 @@ class Server
 
     private function themeTokens(string $theme): string
     {
-        $theme = $theme === 'dark' ? 'dark' : 'light';
+        $valid = ['light', 'dark', 'iron', 'iron-dark', 'fitness', 'fitness-dark'];
+        $theme = in_array($theme, $valid, true) ? $theme : 'light';
         $css = (string) @file_get_contents($this->packagePath.'/resources/css/nicro.css');
 
-        if (! preg_match("/\\[data-theme='{$theme}'\\]\\s*\\{(.*?)\\n\\}/s", $css, $block)) {
+        if (! preg_match("/\\[data-theme='{$theme}'[^\\]]*\\]\\s*\\{(.*?)\\n\\}/s", $css, $block)) {
             return "Tokens do tema {$theme} não encontrados em nicro.css.";
         }
 

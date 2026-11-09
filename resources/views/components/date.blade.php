@@ -57,7 +57,7 @@
             hide(refocus = true) { if (! this.open) return; this.open = false; this.closePanel(); if (refocus) this.$refs.trigger.focus() },
             place() {
                 const anchor = this.$refs.anchor.getBoundingClientRect(), panel = this.$refs.panel;
-                
+
                 const height = panel.offsetHeight, below = innerHeight - anchor.bottom;
                 const up = below < height + 16 && anchor.top > below;
                 panel.dataset.side = up ? 'top' : 'bottom';
@@ -147,7 +147,3 @@
         </div>
     </div>
 </x-nui::field>
-
-
-
-

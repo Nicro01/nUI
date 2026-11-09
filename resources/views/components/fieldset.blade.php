@@ -31,4 +31,3 @@
         <div class="mt-5 flex flex-wrap items-center justify-end gap-2 border-t border-base-content/10 pt-4">{{ $actions }}</div>
     @endisset
 </fieldset>
-

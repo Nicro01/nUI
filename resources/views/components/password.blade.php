@@ -18,5 +18,3 @@
         </x-nui::button>
     </x-nui::box>
 </x-nui::field>
-
-

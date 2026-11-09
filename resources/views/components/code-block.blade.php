@@ -123,6 +123,3 @@
         </div>
     @endif
 </figure>
-
-
-

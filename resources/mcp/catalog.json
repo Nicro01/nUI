@@ -3818,6 +3818,102 @@
                 "blade": "<div x-data=\"{ ultima: '' }\" x-on:kanban-moved=\"ultima = $event.detail.cardId + ' → ' + $event.detail.to\">\n    <x-nui::kanban :columns=\"$quadro\" wire:model.live=\"quadro\" label=\"Quadro Livewire\" />\n    <p class=\"mt-3 text-sm\" role=\"status\" x-text=\"ultima || 'Aguardando movimentação.'\"></p>\n</div>"
             }
         },
+        "calendar-grid": {
+            "title": "Calendar grid",
+            "group": "Blocos",
+            "lead": "Agenda semanal com navegação por arraste, horas e datas fixas, filtros separados de ano, mês e dia e compromissos lado a lado. Componha o agendamento com os controles do nUI.",
+            "examples": [
+                {
+                    "title": "Criar e editar compromissos",
+                    "text": "Escolha ano, mês e dia para navegar diretamente ou arraste a grade com grab. Horas e datas ficam fixas. Um clique sem arrastar cria ou edita um compromisso. Os dados deste exemplo são fictícios e ficam apenas na página; o drawer valida os campos antes de atualizar a agenda.",
+                    "code": "<x-nui::calendar-grid date=\"2026-11-09\" label=\"Agenda do estúdio\"\n    :events=\"$events\" :value=\"$selected\" wire:model=\"selected\"\n    x-on:calendar-select=\"$wire.createAt($event.detail.start)\"\n    x-on:calendar-event=\"$wire.editEvent($event.detail.id)\" />"
+                },
+                {
+                    "title": "Dados, sobreposições e dias consecutivos",
+                    "text": "Cada evento tem id único, title, start e end. Datas usam o horário local da agenda no formato YYYY-MM-DDTHH:mm, sem Z ou offset. Converta o fuso no servidor antes de fornecer os dados. Eventos que atravessam dias aparecem em cada dia, recortados à faixa de horários visível.",
+                    "code": "<x-nui::calendar-grid date=\"2026-11-09\" :events=\"[\n    ['id' => 'reuniao', 'title' => 'Alinhamento', 'start' => '2026-11-10T10:00', 'end' => '2026-11-10T11:30'],\n    ['id' => 'revisao', 'title' => 'Revisão', 'start' => '2026-11-10T10:30', 'end' => '2026-11-10T12:00', 'variant' => 'warning'],\n    ['id' => 'reserva', 'title' => 'Reserva do estúdio', 'start' => '2026-11-12T16:00', 'end' => '2026-11-13T10:00', 'variant' => 'success'],\n]\" />"
+                },
+                {
+                    "title": "Horários e modo de leitura",
+                    "text": "startHour e endHour delimitam a grade; step define os intervalos de 15, 30 ou 60 minutos. readonly mantém navegação e rolagem, mas bloqueia seleção e edição. Sem eventos, todos os horários da grade continuam disponíveis. A agenda não bloqueia conflitos automaticamente: aplique essa regra no servidor ao salvar.",
+                    "code": "<x-nui::calendar-grid date=\"2026-11-09\" label=\"Disponibilidade da equipe\" :start-hour=\"9\" :end-hour=\"17\" :step=\"60\" readonly :events=\"[\n    ['id' => 'equipe', 'title' => 'Reunião da equipe', 'start' => '2026-11-11T10:00', 'end' => '2026-11-11T11:00'],\n]\" />"
+                }
+            ],
+            "props": [
+                {
+                    "name": "events",
+                    "values": "array; id, title, start, end e variant opcional",
+                    "default": "[]"
+                },
+                {
+                    "name": "date",
+                    "values": "YYYY-MM-DD; dia da semana inicial (segunda a domingo)",
+                    "default": "hoje"
+                },
+                {
+                    "name": "value",
+                    "values": "YYYY-MM-DDTHH:mm; horário selecionado; x-model / wire:model",
+                    "default": "''"
+                },
+                {
+                    "name": "name",
+                    "values": "string; campo oculto para formulários",
+                    "default": "null"
+                },
+                {
+                    "name": "startHour · endHour",
+                    "values": "int; limites de 0 a 24, fim após início",
+                    "default": "8 · 18"
+                },
+                {
+                    "name": "step",
+                    "values": "15 | 30 | 60; minutos por horário",
+                    "default": "30"
+                },
+                {
+                    "name": "locale",
+                    "values": "string; formatação de dias e período",
+                    "default": "pt-BR"
+                },
+                {
+                    "name": "label",
+                    "values": "string; nome acessível e título da agenda",
+                    "default": "Agenda semanal"
+                },
+                {
+                    "name": "readonly · disabled",
+                    "values": "bool; bloqueiam seleção e edição",
+                    "default": "false"
+                },
+                {
+                    "name": "variant (evento)",
+                    "values": "primary | success | warning | danger | neutral",
+                    "default": "primary"
+                },
+                {
+                    "name": "calendar-select",
+                    "values": "evento com start, end e date ao selecionar horário",
+                    "default": "—"
+                },
+                {
+                    "name": "calendar-event",
+                    "values": "evento com os dados do compromisso clicado",
+                    "default": "—"
+                },
+                {
+                    "name": "calendar-period",
+                    "values": "evento com start inclusivo e end exclusivo ao navegar",
+                    "default": "—"
+                }
+            ],
+            "integration": {
+                "alpine_text": "Use x-model para receber o horário selecionado. calendar-select traz início e fim do intervalo; calendar-event traz o compromisso escolhido. As setas percorrem a grade, Enter seleciona e os botões do cabeçalho mudam a semana. A grade rola nas duas direções em telas pequenas.",
+                "alpine": "<div x-data=\"{ horario: '', compromisso: '' }\" class=\"w-full space-y-4\">\n    <x-nui::calendar-grid date=\"2026-11-09\" x-model=\"horario\" name=\"horario\"\n        x-on:calendar-select=\"compromisso = ''\"\n        x-on:calendar-event=\"compromisso = $event.detail.title\" :events=\"[\n            ['id' => 'visita', 'title' => 'Visita ao estúdio', 'start' => '2026-11-10T10:00', 'end' => '2026-11-10T11:00'],\n        ]\" />\n    <p class=\"text-sm text-base-content/70\" role=\"status\" x-text=\"compromisso || (horario ? 'Horário selecionado: ' + horario.replace('T', ' ') : 'Selecione um horário na grade.')\"></p>\n</div>",
+                "livewire_text": "Mantenha os eventos no servidor e passe :events para a grade. wire:model recebe o horário; Alpine chama as ações de criar/editar com os eventos do calendário. A grade atualiza os dados recebidos durante o morph do Livewire, sem wire:ignore. O exemplo abaixo cria e edita compromissos de 30 minutos; persista os dados e valide conflitos e permissões na sua aplicação.",
+                "php": "    public array $events = [];\n    public string $selected = '';\n    public string $title = '';\n    public ?string $editing = null;\n\n    public function preparar(string $start): void\n    {\n        $this->selected = $start;\n        $this->editing = null;\n        $this->title = '';\n        $this->resetValidation();\n    }\n\n    public function editar(string $id): void\n    {\n        $event = collect($this->events)->firstWhere('id', $id);\n        abort_unless($event, 404);\n        $this->selected = $event['start'];\n        $this->title = $event['title'];\n        $this->editing = $id;\n    }\n\n    public function salvar(): void\n    {\n        $this->validate(['title' => 'required|string|max:100', 'selected' => 'required|date_format:Y-m-d\\TH:i']);\n        $event = [\n            'id' => $this->editing ?? (string) \\Illuminate\\Support\\Str::uuid(),\n            'title' => $this->title,\n            'start' => $this->selected,\n            'end' => \\Carbon\\CarbonImmutable::parse($this->selected)->addMinutes(30)->format('Y-m-d\\TH:i'),\n        ];\n        $this->events = collect($this->events)->reject(fn ($item) => $item['id'] === $event['id'])->push($event)->values()->all();\n    }",
+                "blade": "<div class=\"space-y-5\">\n    <x-nui::calendar-grid date=\"2026-11-09\" :events=\"$events\" :value=\"$selected\" wire:model=\"selected\"\n        x-on:calendar-select=\"$wire.preparar($event.detail.start)\" x-on:calendar-event=\"$wire.editar($event.detail.id)\" />\n    <x-nui::form wire:submit=\"salvar\" submit-label=\"Salvar compromisso\" class=\"max-w-md\" summary>\n        <p class=\"text-sm text-base-content/70\">Horário: {{ $selected ?: 'Selecione um horário na grade.' }}</p>\n        <x-nui::input label=\"Título\" wire:model=\"title\" required maxlength=\"100\" :error=\"$errors->first('title')\" />\n    </x-nui::form>\n</div>"
+            }
+        },
         "data-grid": {
             "title": "Data grid",
             "group": "Blocos",

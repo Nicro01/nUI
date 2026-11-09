@@ -7,6 +7,9 @@
 
 @php
     $clickAttributes = ['wire:click', 'x-on:click', '@click'];
+    $sortClickDefaults = $attributes->whereStartsWith($clickAttributes)->isEmpty()
+        ? ['x-on:click' => "sortColumn(\$el.closest('th'))"]
+        : [];
     $sortState = $sortable ? ($sorted ? ($direction === 'desc' ? 'descending' : 'ascending') : 'none') : null;
 @endphp
 
@@ -19,15 +22,14 @@
     {{ $sortable ? $attributes->whereDoesntStartWith($clickAttributes) : $attributes }}>
     @if ($sortable)
         {{-- Without a click handler, the table sorts the rows in the browser by this column's cell text. --}}
-        <button type="button" data-nui-table-sort
-            @if ($attributes->whereStartsWith($clickAttributes)->isEmpty()) x-on:click="sortColumn($el.closest('th'))" @endif
-            {{ $attributes->whereStartsWith($clickAttributes) }}>
+        <x-nui::button variant="ghost" size="sm" data-nui-table-sort
+            {{ $attributes->whereStartsWith($clickAttributes)->merge($sortClickDefaults) }}>
             <span>{{ $slot }}</span>
             <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path data-up d="m5 6.5 3-3 3 3" />
                 <path data-down d="m5 9.5 3 3 3-3" />
             </svg>
-        </button>
+        </x-nui::button>
     @else
         {{ $slot }}
     @endif

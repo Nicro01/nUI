@@ -35,6 +35,3 @@
         </x-nui::button>
     @endif
 </span>
-
-
-
