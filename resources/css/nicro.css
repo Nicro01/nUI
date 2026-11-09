@@ -1,0 +1,3190 @@
+/*
+ * nUI — design tokens.
+ * Colour mode via data-theme = light | dark on <html> (or any element).
+ * Components only reference these variables, so a theme is just one block of overrides.
+ * Import after tailwindcss:  @import '../../packages/nui/resources/css/nicro.css';
+ */
+@source '../views';
+
+html:has(.nui-lightbox-dialog[open]) { overflow: hidden; }
+.nui-lightbox-dialog { max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain; }
+
+.nui-layout-sidebar { display: flex; flex-direction: column; }
+
+@media (width < 48rem) {
+    .nui-layout-sidebar:not([data-open='true']) { display: none; }
+}
+
+/*
+ * Fixed layout (app shell): one viewport tall. The sidebar is capped at that height and scrolls its own
+ * links if they overflow; only the content column scrolls, below a header that stays in place.
+ * Inside a device mockup the mockup's screen plays the role of 100dvh.
+ */
+.nui-layout[data-fixed] {
+    height: 100dvh;
+    overflow: hidden;
+
+    & > .nui-layout-frame { height: 100%; }
+    & .nui-layout-sidebar { max-height: 100%; }
+    & .nui-layout-nav { min-height: 0; flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+    & .nui-layout-column { min-height: 0; }
+    & .nui-layout-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+}
+
+@media (width < 48rem) {
+    /* Phone: the open navigation takes at most half the screen, the content keeps the rest. */
+    .nui-layout[data-fixed] .nui-layout-sidebar { max-height: 50%; flex: none; }
+}
+
+/* A mockup holding a fixed layout stops growing with its content: its screen height is the 100dvh. */
+.nui-desktop-lid:has(.nui-layout[data-fixed]) { height: var(--nui-desktop-h); }
+.nui-tablet-chassis:has(.nui-layout[data-fixed]) { height: var(--nui-tablet-h); }
+.nui-phone-chassis:has(.nui-layout[data-fixed]) { height: var(--nui-phone-h); }
+
+:is(.nui-desktop-viewport, .nui-tablet-viewport, .nui-phone-viewport) > .nui-layout[data-fixed] {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+}
+
+/* Menu shares the library's surfaces and controls; submenus expand within the
+   panel so deep navigation stays reachable on narrow screens. */
+.nui-menu-panel { min-width: 0; }
+.nui-menu-popup {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    width: min(18rem, calc(100vw - 24px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--nui-base-300) var(--nui-base-100);
+}
+.nui-menu-popup:not(:popover-open) { display: none; }
+.nui-menu-inline { width: 100%; }
+.nui-menu .nui-menu-item {
+    width: 100%; height: auto; min-height: 2.75rem;
+    justify-content: flex-start; padding: 0.625rem 0.75rem;
+    text-align: start; white-space: normal; overflow-wrap: anywhere;
+    font-size: 0.875rem; font-weight: 500;
+    border: 0; box-shadow: none;
+    border-radius: min(var(--nui-radius-field), 0.5rem);
+    transition: background-color 120ms ease-out, color 120ms ease-out;
+}
+.nui-menu .nui-menu-item:active { transform: none; }
+.nui-menu .nui-menu-item:focus-visible { outline-offset: -2px; background: var(--nui-base-200); }
+.nui-menu .nui-menu-active { background: var(--nui-base-200); color: var(--nui-primary); font-weight: 650; }
+.nui-menu .nui-menu-danger { color: var(--nui-danger); }
+.nui-menu .nui-menu-danger:hover { background: color-mix(in oklch, var(--nui-danger) 10%, transparent); }
+.nui-menu-check { cursor: pointer; user-select: none; }
+.nui-menu-check > label { display: flex; width: 100%; min-height: 2.75rem; align-items: center; padding: 0.625rem 0.75rem; border-radius: min(var(--nui-radius-field), 0.5rem); cursor: pointer; user-select: none; }
+.nui-menu-check > label:hover { background: var(--nui-base-200); }
+.nui-menu-check > label > span:last-child { flex: 1 1 0%; min-width: 0; }
+.nui-filter-panel .nui-filter-option { cursor: pointer; user-select: none; }
+.nui-filter-panel .nui-filter-option > label { display: flex; flex: 1 1 0%; min-width: 0; align-items: center; cursor: pointer; user-select: none; }
+.nui-filter-panel .nui-filter-option > label > span:first-child { margin-top: 0; }
+.nui-filter-panel .nui-filter-option > label > span:last-child { flex: 1 1 0%; min-width: 0; }
+@media (prefers-reduced-motion: reduce) { .nui-menu .nui-menu-item { transition: none; } }
+
+@theme inline {
+    --color-base-100: var(--nui-base-100);
+    --color-base-200: var(--nui-base-200);
+    --color-base-300: var(--nui-base-300);
+    --color-base-content: var(--nui-base-content);
+    --color-primary: var(--nui-primary);
+    --color-primary-content: var(--nui-primary-content);
+    --color-secondary: var(--nui-secondary);
+    --color-secondary-content: var(--nui-secondary-content);
+    --color-danger: var(--nui-danger);
+    --color-danger-content: var(--nui-danger-content);
+    --color-success: var(--nui-success);
+    --color-success-content: var(--nui-success-content);
+    --color-warning: var(--nui-warning);
+    --color-warning-content: var(--nui-warning-content);
+    --radius-nui: var(--nui-radius);
+    --radius-nui-field: var(--nui-radius-field);
+    --shadow-nui: var(--nui-shadow);
+    --shadow-nui-inset: var(--nui-shadow-inset);
+    --shadow-nui-control: var(--nui-shadow-control);
+    --color-field: var(--nui-field-bg);
+    --color-field-border: var(--nui-field-border);
+}
+
+/* nUI · light: walnut ink on newsprint, brass accents, key-cap edges. */
+:root,
+[data-theme='light'] {
+    color-scheme: light;
+    --nui-base-100: oklch(99.5% 0.003 90);
+    --nui-base-200: oklch(96.5% 0.006 90);
+    --nui-base-300: oklch(87% 0.012 80);
+    --nui-base-content: oklch(23% 0.02 260);
+    --nui-primary: oklch(36% 0.05 50);
+    --nui-primary-content: oklch(96% 0.01 85);
+    --nui-secondary: oklch(80% 0.11 85);
+    --nui-secondary-content: oklch(24% 0.03 60);
+    --nui-danger: oklch(52% 0.18 30);
+    --nui-danger-content: oklch(98% 0.01 30);
+    --nui-success: oklch(50% 0.12 150);
+    --nui-success-content: oklch(98% 0.01 150);
+    --nui-warning: oklch(76% 0.15 75);
+    --nui-warning-content: oklch(26% 0.05 70);
+    /* Chart inks from the type case (validated categorical order, CVD-safe vs base-100): walnut, blue ink, brass. Assign in order, never cycle. */
+    --nui-chart-1: #9a4f26;
+    --nui-chart-2: #2a6c9e;
+    --nui-chart-3: #b8862a;
+    --nui-radius: 0.5rem;
+    --nui-radius-field: 0.375rem;
+    --nui-border-width: 1px;
+    --nui-field-bg: oklch(99.5% 0.003 90);
+    --nui-field-border: oklch(87% 0.012 80);
+    --nui-field-border-width: 1px;
+    --nui-control-weight: 500;
+    --nui-shadow: 0 1px 2px oklch(25% 0.03 60 / 0.07);
+    --nui-shadow-inset: inset 0 1px 2px oklch(25% 0.03 60 / 0.1);
+    --nui-shadow-control: inset 0 1px 0 oklch(100% 0 0 / 0.22), inset 0 -2px 0 oklch(0% 0 0 / 0.22), 0 1px 2px oklch(25% 0.03 60 / 0.2);
+}
+
+/* nUI · dark: the drawer at night. Walnut-black surfaces, brass as the action colour. */
+[data-theme='dark'] {
+    color-scheme: dark;
+    --nui-base-100: oklch(24% 0.014 60);
+    --nui-base-200: oklch(20% 0.012 60);
+    --nui-base-300: oklch(34% 0.018 60);
+    --nui-base-content: oklch(93% 0.01 85);
+    --nui-primary: oklch(79% 0.11 85);
+    --nui-primary-content: oklch(22% 0.03 60);
+    --nui-secondary: oklch(34% 0.02 60);
+    --nui-secondary-content: oklch(93% 0.01 85);
+    --nui-danger: oklch(66% 0.17 30);
+    --nui-danger-content: oklch(20% 0.04 30);
+    --nui-success: oklch(72% 0.14 150);
+    --nui-success-content: oklch(18% 0.04 150);
+    --nui-warning: oklch(80% 0.14 80);
+    --nui-warning-content: oklch(22% 0.05 70);
+    /* Chart inks (validated categorical order vs the dark base-100): walnut, blue ink, brass. */
+    --nui-chart-1: #c9774c;
+    --nui-chart-2: #5594cc;
+    --nui-chart-3: #b98c30;
+    --nui-radius: 0.5rem;
+    --nui-radius-field: 0.375rem;
+    --nui-border-width: 1px;
+    --nui-field-bg: oklch(24% 0.014 60);
+    --nui-field-border: oklch(34% 0.018 60);
+    --nui-field-border-width: 1px;
+    --nui-control-weight: 500;
+    --nui-shadow: 0 1px 2px oklch(0% 0 0 / 0.35);
+    --nui-shadow-inset: inset 0 1px 2px oklch(0% 0 0 / 0.35);
+    --nui-shadow-control: inset 0 1px 0 oklch(100% 0 0 / 0.25), inset 0 -2px 0 oklch(0% 0 0 / 0.3), 0 1px 2px oklch(0% 0 0 / 0.45);
+}
+
+/* Shared runtime bits for the Alpine-powered components. */
+[x-cloak] {
+    display: none !important;
+}
+
+@keyframes nui-dialog-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+}
+
+/*
+ * Popover morph: the panel grows out of the field it belongs to (a clip that starts
+ * at the trigger's height and unrolls), then its contents settle in.
+ */
+.nui-pop-in {
+    animation: nui-morph-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    &[data-side='top'] {
+        animation-name: nui-morph-in-up;
+    }
+
+    & > * {
+        animation: nui-settle 220ms 70ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
+.nui-pop-out {
+    animation: nui-morph-out 130ms ease-in forwards;
+}
+
+@keyframes nui-morph-in {
+    from {
+        clip-path: inset(0 0 calc(100% - 2.75rem) 0 round var(--nui-radius));
+        transform: translateY(-10px);
+    }
+    to {
+        clip-path: inset(-40px round var(--nui-radius));
+    }
+}
+
+@keyframes nui-morph-in-up {
+    from {
+        clip-path: inset(calc(100% - 2.75rem) 0 0 0 round var(--nui-radius));
+        transform: translateY(10px);
+    }
+    to {
+        clip-path: inset(-40px round var(--nui-radius));
+    }
+}
+
+@keyframes nui-settle {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes nui-morph-out {
+    to {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-pop-in,
+    .nui-pop-in > *,
+    .nui-pop-out {
+        animation-duration: 1ms;
+    }
+}
+
+/*
+ * Tabs: the indicator slides between tabs once placed; a newly selected panel unrolls
+ * (the same clip morph as popovers) and its content settles in from the side it came from.
+ */
+.nui-tabs[data-ready] .nui-tabs-indicator {
+    transition:
+        left 380ms cubic-bezier(0.16, 1, 0.3, 1),
+        top 380ms cubic-bezier(0.16, 1, 0.3, 1),
+        width 380ms cubic-bezier(0.16, 1, 0.3, 1),
+        height 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Before Alpine runs, a tab group or settings modal without "default" shows only its first panel. */
+.nui-tabs[data-auto]:not([data-ready]) .nui-tabs-panels > .nui-tab-panel ~ .nui-tab-panel,
+.nui-settings-modal[data-auto]:not([data-ready]) .nui-settings-panels > .nui-settings-panel ~ .nui-settings-panel {
+    display: none;
+}
+
+.nui-tabs[data-switched] .nui-tab-panel:not([hidden]),
+.nui-settings-modal[data-switched] .nui-settings-panel:not([hidden]) {
+    animation: nui-tab-unroll 320ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    & > * {
+        animation: nui-tab-settle 260ms 60ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
+.nui-tabs[data-direction='back'] .nui-tab-panel > * {
+    --nui-tab-from: -10px;
+}
+
+@keyframes nui-tab-unroll {
+    from {
+        clip-path: inset(0 0 calc(100% - 3rem) 0 round var(--nui-radius));
+    }
+    to {
+        clip-path: inset(-40px round var(--nui-radius));
+    }
+}
+
+@keyframes nui-tab-settle {
+    from {
+        opacity: 0;
+        transform: translateX(var(--nui-tab-from, 10px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-tabs[data-ready] .nui-tabs-indicator {
+        transition: none;
+    }
+
+    .nui-tabs[data-switched] .nui-tab-panel:not([hidden]),
+    .nui-tabs[data-switched] .nui-tab-panel:not([hidden]) > *,
+    .nui-settings-modal[data-switched] .nui-settings-panel:not([hidden]),
+    .nui-settings-modal[data-switched] .nui-settings-panel:not([hidden]) > * {
+        animation-duration: 1ms;
+    }
+}
+
+/*
+ * Carousel: slide width from the visible count (per-view, plus a peek of the next slide).
+ * Phones always show one slide; per-view applies from 40rem up.
+ */
+.nui-carousel-slide {
+    --nui-carousel-count: var(--nui-carousel-base, 1);
+    flex: 0 0 calc((100% - (var(--nui-carousel-count) - 1) * var(--nui-carousel-gap, 16px)) / var(--nui-carousel-count));
+
+    @media (min-width: 40rem) {
+        --nui-carousel-count: var(--nui-carousel-view, 1);
+    }
+}
+
+.nui-carousel-track {
+    scroll-behavior: smooth;
+
+    @media (prefers-reduced-motion: reduce) {
+        scroll-behavior: auto;
+    }
+}
+
+/*
+ * Timeline: a rail column (key-cap marker + line to the next item) beside the content.
+ * The line under an item is solid once that item is done, dashed while it is still ahead.
+ * Everything keys off data-layout / data-marker on the list and data-status on each item.
+ */
+.nui-timeline {
+    --nui-timeline-mark: 1.75rem;
+    --nui-timeline-gap: 1.75rem;
+    --nui-timeline-line: color-mix(in oklab, var(--nui-base-content) 18%, transparent);
+
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: nui-step;
+
+    &[data-compact] {
+        --nui-timeline-gap: 1rem;
+    }
+
+    &[data-marker='dot'] {
+        --nui-timeline-mark: 0.75rem;
+    }
+}
+
+.nui-timeline-item,
+.nui-timeline-heading {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--nui-timeline-mark) minmax(0, 1fr);
+    column-gap: 1rem;
+    padding-bottom: var(--nui-timeline-gap);
+
+    &:last-child {
+        padding-bottom: 0;
+    }
+}
+
+.nui-timeline-item {
+    counter-increment: nui-step;
+}
+
+.nui-timeline-rail {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    /* Line from below this marker to the next one. */
+    &::after {
+        content: '';
+        position: absolute;
+        left: calc(50% - 1px);
+        top: calc(var(--nui-timeline-mark) + 0.375rem);
+        bottom: calc(0.375rem - var(--nui-timeline-gap));
+        border-left: 2px dashed var(--nui-timeline-line);
+    }
+}
+
+.nui-timeline-item:last-child > .nui-timeline-rail::after,
+.nui-timeline-heading:last-child > .nui-timeline-rail::after {
+    display: none;
+}
+
+.nui-timeline-item:is([data-status='done']) > .nui-timeline-rail::after {
+    border-left-style: solid;
+    border-left-color: var(--nui-primary);
+}
+
+/* A group label sits on the line, which keeps running behind it. */
+.nui-timeline-heading {
+    align-items: center;
+
+    & > .nui-timeline-rail {
+        align-self: stretch;
+
+        &::after {
+            top: 0;
+            bottom: calc(0.375rem - var(--nui-timeline-gap));
+        }
+    }
+
+    &:first-child > .nui-timeline-rail::after {
+        top: 50%;
+    }
+
+    & > .nui-timeline-heading-label {
+        justify-self: start;
+    }
+}
+
+/* Marker: a small key-cap (thicker bottom edge), or a dot. */
+.nui-timeline-marker {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--nui-timeline-mark);
+    height: var(--nui-timeline-mark);
+    overflow: hidden;
+    border-radius: min(var(--nui-radius-field), 0.5rem);
+    border: 1px solid color-mix(in oklab, var(--nui-base-content) 16%, transparent);
+    border-bottom-width: 3px;
+    background: var(--nui-base-100);
+    color: color-mix(in oklab, var(--nui-base-content) 45%, transparent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    transition:
+        background-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    & svg {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+}
+
+.nui-timeline-pip {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+/* Only the mark (and the spoken status) for the item's current status shows. */
+.nui-timeline-item [data-when] {
+    display: none;
+}
+
+.nui-timeline-item[data-status='done'] [data-when='done'],
+.nui-timeline-item[data-status='current'] [data-when='current'],
+.nui-timeline-item[data-status='upcoming'] [data-when='upcoming'],
+.nui-timeline-item[data-status='error'] [data-when='error'],
+.nui-timeline-item[data-status='warning'] [data-when='warning'] {
+    display: inline;
+}
+
+.nui-timeline-item[data-status='done'] .nui-timeline-marker {
+    background: var(--nui-primary);
+    color: var(--nui-primary-content);
+    border-color: oklch(0% 0 0 / 0.12);
+    border-bottom-color: oklch(0% 0 0 / 0.28);
+}
+
+.nui-timeline-item[data-status='current'] .nui-timeline-marker {
+    color: var(--nui-primary);
+    border-color: var(--nui-primary);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--nui-primary) 16%, transparent);
+}
+
+.nui-timeline-item[data-status='upcoming'] {
+    & .nui-timeline-marker {
+        border-style: dashed;
+        border-bottom-width: 1px;
+        background: transparent;
+    }
+
+    & .nui-timeline-title {
+        color: color-mix(in oklab, var(--nui-base-content) 60%, transparent);
+    }
+}
+
+.nui-timeline-item[data-status='error'] .nui-timeline-marker {
+    background: var(--nui-danger);
+    color: var(--nui-danger-content);
+    border-color: oklch(0% 0 0 / 0.12);
+    border-bottom-color: oklch(0% 0 0 / 0.28);
+}
+
+.nui-timeline-item[data-status='warning'] .nui-timeline-marker {
+    background: var(--nui-warning);
+    color: var(--nui-warning-content);
+    border-color: oklch(0% 0 0 / 0.12);
+    border-bottom-color: oklch(0% 0 0 / 0.28);
+}
+
+/* Custom icon or avatar always shows; the status keeps colouring the cap. */
+.nui-timeline-custom svg {
+    display: block;
+}
+
+.nui-timeline-marker:has(> img) {
+    padding: 0;
+    border-radius: 999px;
+    border-bottom-width: 1px;
+}
+
+/* Numbered steps. */
+.nui-timeline[data-marker='number'] .nui-timeline-marker {
+    &::before {
+        content: counter(nui-step);
+    }
+
+    & > [data-when] {
+        display: none;
+    }
+}
+
+.nui-timeline[data-marker='number'] .nui-timeline-item[data-status='done'] .nui-timeline-marker {
+    &::before {
+        content: none;
+    }
+
+    & > [data-when='done'] {
+        display: inline;
+    }
+}
+
+/* Dots: a small round mark, no glyph, for dense activity feeds. */
+.nui-timeline[data-marker='dot'] {
+    & .nui-timeline-rail {
+        padding-top: 0.375rem;
+
+        &::after {
+            top: calc(var(--nui-timeline-mark) + 0.375rem + 0.375rem);
+        }
+    }
+
+    & .nui-timeline-marker {
+        border-radius: 999px;
+        border-bottom-width: 1px;
+
+        & > :not(img) {
+            display: none !important;
+        }
+    }
+}
+
+/* Title lines up with the middle of a key-cap marker. */
+.nui-timeline:not([data-marker='dot']) .nui-timeline-body {
+    padding-top: 0.125rem;
+}
+
+/* Alternate: zigzag around a centred spine from 48rem; a plain vertical list below that. */
+@media (min-width: 48rem) {
+    .nui-timeline[data-layout='alternate'] {
+        & > .nui-timeline-item,
+        & > .nui-timeline-heading {
+            grid-template-columns: minmax(0, 1fr) var(--nui-timeline-mark) minmax(0, 1fr);
+        }
+
+        & > * > .nui-timeline-rail {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        & > .nui-timeline-item > .nui-timeline-body {
+            grid-column: 3;
+            grid-row: 1;
+        }
+
+        & > .nui-timeline-item:nth-child(even) > .nui-timeline-body {
+            grid-column: 1;
+            text-align: right;
+
+            & .nui-timeline-head {
+                flex-direction: row-reverse;
+            }
+
+            & .nui-timeline-meta {
+                justify-content: flex-end;
+            }
+        }
+
+        & > .nui-timeline-heading > .nui-timeline-heading-label {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            justify-self: center;
+            z-index: 1;
+        }
+    }
+}
+
+/* Horizontal: steps side by side, the line runs to the right; scrolls when it does not fit. */
+.nui-timeline[data-layout='horizontal'] {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    /* Room for the current step's ring, which the scroll container would otherwise clip. */
+    padding: 0.375rem;
+    margin: -0.375rem;
+
+    & > .nui-timeline-item,
+    & > .nui-timeline-heading {
+        flex: 1 1 0;
+        min-width: 7.5rem;
+        grid-template-columns: none;
+        grid-template-rows: var(--nui-timeline-mark) auto;
+        row-gap: 0.75rem;
+        padding-bottom: 0;
+        padding-right: 1.25rem;
+        scroll-snap-align: start;
+
+        &:last-child {
+            padding-right: 0;
+        }
+    }
+
+    & .nui-timeline-rail {
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 0;
+
+        &::after {
+            left: calc(var(--nui-timeline-mark) + 0.375rem);
+            right: calc(0.375rem - 1.25rem);
+            top: calc(50% - 1px);
+            bottom: auto;
+            border-left: 0;
+            border-top: 2px dashed var(--nui-timeline-line);
+        }
+    }
+
+    & .nui-timeline-item[data-status='done'] > .nui-timeline-rail::after {
+        border-top-style: solid;
+        border-top-color: var(--nui-primary);
+    }
+
+    & .nui-timeline-heading {
+        align-items: start;
+
+        & > .nui-timeline-rail::after {
+            left: 0;
+        }
+
+        & > .nui-timeline-heading-label {
+            grid-row: 1;
+            grid-column: 1;
+            z-index: 1;
+            align-self: center;
+        }
+    }
+
+    & .nui-timeline-body {
+        padding-top: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-timeline-marker {
+        transition: none;
+    }
+}
+
+@keyframes nui-drawer-right {
+    from {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes nui-drawer-left {
+    from {
+        transform: translateX(-100%);
+    }
+}
+
+.nui-toast {
+    animation: nui-toast-in 360ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    &[data-side='top'] {
+        animation-name: nui-toast-in-top;
+    }
+}
+
+@keyframes nui-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+    }
+}
+
+@keyframes nui-toast-in-top {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.96);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-toast,
+    dialog[open] {
+        animation-duration: 1ms !important;
+    }
+}
+
+/* Toast timer: drains left to right over the toast's duration; play state follows the JS timer. */
+.nui-toast-timer {
+    animation-name: nui-toast-timer;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes nui-toast-timer {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* Collapsed pile: cards behind the front one show only their edge. */
+.nui-toast-behind {
+    max-height: 4.25rem;
+    overflow: hidden;
+
+    & > * {
+        opacity: 0;
+    }
+}
+
+@keyframes nui-sheet-up {
+    from {
+        transform: translateY(100%);
+    }
+}
+
+/* Collapse: tactile morphing <details> card with spring-eased height, opacity and content slide */
+.nui-collapse {
+    interpolate-size: allow-keywords;
+    transition:
+        border-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 200ms ease;
+
+    &::details-content {
+        height: 0;
+        opacity: 0;
+        overflow: clip;
+        transition:
+            height 340ms cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+            content-visibility 340ms allow-discrete;
+    }
+
+    &[open]::details-content {
+        height: auto;
+        opacity: 1;
+    }
+}
+
+@starting-style {
+    .nui-collapse[open]::details-content {
+        height: 0;
+        opacity: 0;
+    }
+}
+
+/* Morph unroll: content slides upwards into place with a subtle spring ease */
+.nui-collapse-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.nui-collapse .nui-collapse-body {
+    transform: translateY(-8px);
+    opacity: 0;
+    transition:
+        transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nui-collapse[open] .nui-collapse-body {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: 35ms;
+}
+
+@starting-style {
+    .nui-collapse[open] .nui-collapse-body {
+        transform: translateY(-8px);
+        opacity: 0;
+    }
+}
+
+/* Inside a bordered accordion the rows share one box. */
+.nui-accordion-bordered > .nui-collapse {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+
+    & > summary {
+        border-radius: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-collapse,
+    .nui-collapse::details-content,
+    .nui-collapse .nui-collapse-body,
+    .nui-collapse-divider {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* Code block: always a dark "press" surface; token colours tuned to the nUI palette. */
+:root {
+    --nui-code-bg: oklch(22% 0.018 260);
+    --nui-code-bar: oklch(19% 0.016 260);
+    --nui-code-fg: oklch(92% 0.008 85);
+    --nui-code-muted: oklch(66% 0.015 260);
+    --nui-code-accent: oklch(80% 0.11 85);
+}
+
+.nui-code .hljs-comment,
+.nui-code .hljs-quote {
+    color: oklch(62% 0.015 260);
+    font-style: italic;
+}
+
+.nui-code :is(.hljs-keyword, .hljs-selector-tag, .hljs-meta .hljs-keyword, .hljs-literal, .hljs-doctag) {
+    color: oklch(80% 0.11 85);
+}
+
+.nui-code :is(.hljs-string, .hljs-regexp, .hljs-addition, .hljs-meta .hljs-string) {
+    color: oklch(80% 0.11 145);
+}
+
+.nui-code :is(.hljs-number, .hljs-symbol, .hljs-bullet) {
+    color: oklch(78% 0.12 45);
+}
+
+.nui-code :is(.hljs-title, .hljs-title.function_, .hljs-section, .hljs-selector-id) {
+    color: oklch(80% 0.09 235);
+}
+
+.nui-code :is(.hljs-attr, .hljs-attribute, .hljs-property, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-template-variable) {
+    color: oklch(80% 0.09 300);
+}
+
+.nui-code :is(.hljs-built_in, .hljs-type, .hljs-title.class_, .hljs-variable.language_) {
+    color: oklch(80% 0.09 190);
+}
+
+.nui-code :is(.hljs-name, .hljs-tag, .hljs-meta) {
+    color: oklch(76% 0.1 20);
+}
+
+.nui-code :is(.hljs-variable, .hljs-params, .hljs-subst) {
+    color: var(--nui-code-fg);
+}
+
+.nui-code .hljs-deletion {
+    color: oklch(72% 0.15 25);
+}
+
+.nui-code .hljs-emphasis {
+    font-style: italic;
+}
+
+.nui-code .hljs-strong {
+    font-weight: 700;
+}
+
+/*
+ * Collapse morph (same language as the select popover): the body unrolls from the summary
+ * edge and its content settles in. Works in every browser; Chromium also animates height/closing.
+ */
+.nui-collapse[open] > .nui-collapse-body {
+    animation: nui-collapse-morph 320ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    & > * {
+        animation: nui-settle 240ms 60ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
+@keyframes nui-collapse-morph {
+    from {
+        clip-path: inset(0 0 100% 0);
+        transform: translateY(-6px);
+    }
+    to {
+        clip-path: inset(0 0 -20px 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-collapse[open] > .nui-collapse-body,
+    .nui-collapse[open] > .nui-collapse-body > * {
+        animation: none;
+    }
+}
+
+/* Show code exactly as typed: no ligatures turning -> or :: into glyphs. */
+.nui-code :is(pre, code, textarea) {
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0, 'calt' 0;
+}
+
+/* Morph-in for items added at runtime (file rows, thumbnails, messages). */
+.nui-enter {
+    animation: nui-enter 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes nui-enter {
+    from {
+        opacity: 0;
+        clip-path: inset(0 0 100% 0 round var(--nui-radius-field));
+        transform: translateY(-6px) scale(0.98);
+    }
+    to {
+        clip-path: inset(-12px round var(--nui-radius-field));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-enter {
+        animation: none;
+    }
+}
+
+/* Loading, skeleton and indeterminate progress motion. */
+.nui-loading-dot {
+    animation: nui-dot 900ms ease-in-out infinite both;
+}
+
+.nui-loading-bar {
+    animation: nui-bar 1000ms ease-in-out infinite both;
+}
+
+.nui-loading-ring {
+    stroke-dasharray: 57;
+    animation: nui-ring 1.4s ease-in-out infinite;
+}
+
+.nui-skeleton {
+    background-image: linear-gradient(90deg, transparent 0%, oklch(100% 0 0 / 0.45) 50%, transparent 100%);
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    animation: nui-shimmer 1.6s ease-in-out infinite;
+}
+
+[data-theme='dark'] .nui-skeleton {
+    background-image: linear-gradient(90deg, transparent 0%, oklch(100% 0 0 / 0.07) 50%, transparent 100%);
+}
+
+.nui-progress-indeterminate {
+    animation: nui-indeterminate 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.nui-radial-arc {
+    animation: nui-arc-in 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes nui-dot {
+    0%, 80%, 100% { transform: scale(0.55); opacity: 0.45; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes nui-bar {
+    0%, 100% { transform: scaleY(0.35); }
+    50% { transform: scaleY(1); }
+}
+
+@keyframes nui-ring {
+    0% { stroke-dashoffset: 57; }
+    50% { stroke-dashoffset: 14; }
+    100% { stroke-dashoffset: 57; }
+}
+
+@keyframes nui-shimmer {
+    from { background-position: 150% 0; }
+    to { background-position: -50% 0; }
+}
+
+@keyframes nui-indeterminate {
+    from { left: -40%; }
+    to { left: 100%; }
+}
+
+@keyframes nui-arc-in {
+    from { stroke-dashoffset: var(--nui-arc-length); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-skeleton,
+    .nui-radial-arc,
+    .nui-progress-indeterminate {
+        animation-duration: 3s;
+    }
+
+    .nui-skeleton {
+        animation: none;
+    }
+}
+
+/*
+ * Floating label. Rests where the value goes, then rises to the top edge (smaller, accent colour)
+ * on focus or once the field has content. Driven by :placeholder-shown, so the control carries a blank placeholder;
+ * a real placeholder only appears while focused, never under the resting label.
+ */
+.nui-float-label {
+    position: absolute;
+    left: 0.75rem;
+    right: 2.75rem;
+    top: 50%;
+    translate: 0 -50%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    pointer-events: none;
+    font-size: 0.9375rem;
+    line-height: 1.25rem;
+    color: color-mix(in oklch, var(--nui-base-content) 55%, transparent);
+    transition: top 220ms cubic-bezier(0.16, 1, 0.3, 1), translate 220ms cubic-bezier(0.16, 1, 0.3, 1), font-size 220ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms ease;
+}
+
+textarea ~ .nui-float-label {
+    top: 0.95rem;
+    translate: 0 0;
+}
+
+.nui-floating :is(input, textarea)::placeholder {
+    opacity: 0;
+    transition: opacity 160ms ease;
+}
+
+.nui-floating :is(input, textarea):focus::placeholder {
+    opacity: 1;
+}
+
+.nui-floating :is(input, textarea):is(:focus, :not(:placeholder-shown)) ~ .nui-float-label {
+    top: 0.45rem;
+    translate: 0 0;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+}
+
+.nui-floating :is(input, textarea):focus ~ .nui-float-label {
+    color: var(--nui-primary);
+}
+
+/* Legend label takes the accent colour while its field is focused. */
+fieldset:focus-within > legend {
+    color: var(--nui-primary);
+}
+
+
+/* Range: native input, custom key-cap thumb. The visible track/fill are siblings; the input track is transparent. */
+.nui-range input[type='range']::-webkit-slider-runnable-track {
+    background: transparent;
+    height: 100%;
+}
+
+.nui-range input[type='range']::-moz-range-track {
+    background: transparent;
+}
+
+.nui-range input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-top: 0.1875rem;
+    border-radius: 9999px;
+    background: var(--nui-base-100);
+    border: 1px solid color-mix(in oklch, var(--nui-base-content) 18%, transparent);
+    border-bottom-width: 3px;
+    box-shadow: 0 1px 3px oklch(0% 0 0 / 0.18);
+    transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms ease;
+}
+
+.nui-range input[type='range']::-moz-range-thumb {
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 9999px;
+    background: var(--nui-base-100);
+    border: 1px solid color-mix(in oklch, var(--nui-base-content) 18%, transparent);
+    border-bottom-width: 3px;
+    box-shadow: 0 1px 3px oklch(0% 0 0 / 0.18);
+}
+
+.nui-range input[type='range']:hover::-webkit-slider-thumb {
+    transform: scale(1.08);
+}
+
+.nui-range input[type='range']:active::-webkit-slider-thumb {
+    transform: scale(0.94);
+    border-bottom-width: 1px;
+}
+
+.nui-range input[type='range']:focus-visible {
+    outline: none;
+}
+
+.nui-range input[type='range']:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px var(--nui-base-100), 0 0 0 5px var(--nui-primary);
+}
+
+.nui-range input[type='range']:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 3px var(--nui-base-100), 0 0 0 5px var(--nui-primary);
+}
+
+.nui-range-invalid input[type='range']:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px var(--nui-base-100), 0 0 0 5px var(--nui-danger);
+}
+
+/* Dual: both inputs overlap; only the thumbs catch the pointer. */
+.nui-range-dual input[type='range'] {
+    pointer-events: none;
+}
+
+.nui-range-dual input[type='range']::-webkit-slider-thumb {
+    pointer-events: auto;
+}
+
+.nui-range-dual input[type='range']::-moz-range-thumb {
+    pointer-events: auto;
+}
+
+/* Cumulative native-radio rating; hovering previews without changing the submitted value. */
+.nui-rating-fill {
+    opacity: 0;
+}
+
+.nui-rating-star:has(input:checked) .nui-rating-fill,
+.nui-rating-star:has(~ .nui-rating-star input:checked) .nui-rating-fill {
+    opacity: 1;
+}
+
+.nui-rating-star:has(input:focus-visible) {
+    outline: 2px solid var(--nui-primary);
+    outline-offset: 2px;
+}
+
+fieldset[aria-invalid='true'] .nui-rating-star:has(input:focus-visible) {
+    outline-color: var(--nui-danger);
+}
+
+@media (hover: hover) {
+    .nui-rating:has(input:enabled:hover) .nui-rating-fill {
+        opacity: 0;
+    }
+
+    .nui-rating:has(input:enabled:hover) .nui-rating-star:has(input:hover) .nui-rating-fill,
+    .nui-rating:has(input:enabled:hover) .nui-rating-star:has(~ .nui-rating-star input:hover) .nui-rating-fill {
+        opacity: 1;
+    }
+}
+
+@media (forced-colors: active) {
+    .nui-rating-star:has(input:focus-visible) {
+        outline-color: Highlight;
+    }
+}
+
+/* These gradients represent the color gamut, independent of the application theme. */
+.nui-color-surface {
+    background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .nui-color-panel:popover-open {
+        animation: nui-color-grow 220ms cubic-bezier(.16, 1, .3, 1);
+        transform-origin: top left;
+    }
+    @keyframes nui-color-grow {
+        from { clip-path: inset(0 0 90% 0 round var(--nui-radius)); transform: scale(.97); }
+        to { clip-path: inset(0 round var(--nui-radius)); transform: none; }
+    }
+}
+
+.nui-color-trigger {
+    background-image: conic-gradient(var(--nui-base-300) 25%, var(--nui-base-100) 0 50%, var(--nui-base-300) 0 75%, var(--nui-base-100) 0);
+    background-size: 8px 8px;
+}
+.nui-color-hue-control .nui-range > div:first-child {
+    background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+.nui-color-hue-control .nui-range > div:nth-child(2) { visibility: hidden; }
+
+/* Keep numeric content readable while steppers yield space in narrow fields. */
+.nui-number-control { gap: .25rem; }
+.nui-number-step {
+    flex: 0 1 2rem;
+    width: 2rem;
+    min-width: 1.5rem;
+    height: 2rem;
+    padding: 0;
+}
+.nui-number-value {
+    flex: 1 1 3ch;
+    width: 0;
+    min-width: 3ch;
+    padding-inline: 0;
+}
+
+.nui-kanban-card[draggable='true'] { cursor: grab; }
+.nui-kanban-card[draggable='true']:active { cursor: grabbing; }
+@media (prefers-reduced-motion: no-preference) {
+    .nui-kanban-card { transition: box-shadow 160ms ease, transform 220ms cubic-bezier(.16,1,.3,1); }
+    .nui-kanban-card[draggable='true']:active { transform: scale(.985); }
+}
+
+.nui-mega-panel {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    overflow: auto;
+}
+.nui-mega-panel:not(:popover-open) { display: none; }
+.nui-mega-panel:popover-open { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+    .nui-mega-panel:popover-open {
+        animation: nui-mega-grow 280ms cubic-bezier(.16, 1, .3, 1);
+        transform-origin: top left;
+    }
+    @keyframes nui-mega-grow {
+        from { clip-path: inset(0 0 95% 0 round var(--nui-radius)); transform: scale(.985); }
+        to { clip-path: inset(0 round var(--nui-radius)); transform: none; }
+    }
+    /* Switching items: the open panel glides into the next one (Web Animations in megamenu.blade.php). */
+    .nui-mega-panel[data-morphing]:popover-open { animation: none; }
+}
+
+/* Indicator under the open megamenu item: slides between items, fades in and out. */
+.nui-mega-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 2px;
+    width: 0;
+    border-radius: 999px;
+    background: var(--nui-primary);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1), width 340ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+    .nui-mega-indicator { transition: opacity 1ms; }
+}
+
+/*
+ * Table: a galley proof. The header sits on a heavier rule (the key-cap edge), body rows on hairlines,
+ * numerals line up in tabular figures. Rows are tinted, never boxed.
+ * In the components layer, so utility classes on cells (px-2, text-*, font-*) still win.
+ */
+@layer components {
+[data-nui-table] {
+    --nui-table-rule: color-mix(in oklch, var(--nui-base-content) 9%, transparent);
+    --nui-table-head-rule: color-mix(in oklch, var(--nui-base-content) 22%, transparent);
+    --nui-table-pad-x: 1rem;
+    --nui-table-pad-y: 0.75rem;
+
+    &[data-dense] {
+        --nui-table-pad-x: 0.75rem;
+        --nui-table-pad-y: 0.4375rem;
+    }
+
+    &[data-variant='plain'] {
+        --nui-table-pad-x: 0.75rem;
+
+        & th:first-child, & td:first-child { padding-inline-start: 0; }
+        & th:last-child, & td:last-child { padding-inline-end: 0; }
+        & thead th { background: transparent; }
+    }
+
+    & table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        font-variant-numeric: tabular-nums;
+    }
+
+    & th, & td {
+        padding: var(--nui-table-pad-y) var(--nui-table-pad-x);
+        border-bottom: 1px solid var(--nui-table-rule);
+        text-align: start;
+        vertical-align: middle;
+    }
+
+    & thead th {
+        padding-block: calc(var(--nui-table-pad-y) - 0.125rem);
+        border-bottom: 2px solid var(--nui-table-head-rule);
+        background: var(--nui-base-200);
+        color: color-mix(in oklch, var(--nui-base-content) 74%, transparent);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+    }
+
+    & tbody th { font-weight: 500; }
+    & tbody tr:last-child > * { border-bottom: 0; }
+
+    & tfoot td, & tfoot th {
+        border-top: 2px solid var(--nui-table-head-rule);
+        border-bottom: 0;
+        font-weight: 600;
+    }
+
+    & [data-align='end'] { text-align: end; }
+    & [data-align='center'] { text-align: center; }
+
+    &[data-striped] tbody tr:nth-child(even) > * {
+        background: color-mix(in oklch, var(--nui-base-content) 3.5%, transparent);
+    }
+
+    &[data-hover] tbody tr:hover > * {
+        background: color-mix(in oklch, var(--nui-base-content) 5%, transparent);
+    }
+
+    & tbody tr:has([data-nui-table-select]:checked) > * {
+        background: color-mix(in oklch, var(--nui-primary) 8%, transparent);
+    }
+
+    &[data-sticky] thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    /* Checkbox column: narrow, the box centred on the row. */
+    & [data-nui-table-check] {
+        width: 1px;
+        padding-inline-end: 0;
+        line-height: 0;
+
+        & > label { vertical-align: middle; }
+        & > label > span { margin-top: 0; }
+    }
+
+    & [data-nui-table-empty] {
+        padding-block: 2.5rem;
+        text-align: center;
+        color: color-mix(in oklch, var(--nui-base-content) 70%, transparent);
+    }
+
+    /* Sort button: the label plus a pair of chevrons; aria-sort on the <th> decides which one is inked. */
+    & [data-nui-table-sort] {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin: -0.25rem -0.375rem;
+        padding: 0.25rem 0.375rem;
+        border-radius: min(var(--nui-radius-field), 0.375rem);
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        transition: color 150ms ease, background-color 150ms ease;
+
+        &:hover { color: var(--nui-base-content); background: color-mix(in oklch, var(--nui-base-content) 6%, transparent); }
+        &:focus-visible { outline: 2px solid var(--nui-primary); outline-offset: 1px; }
+
+        & svg { width: 0.875rem; height: 0.875rem; flex-shrink: 0; }
+        & path { opacity: 0.35; transition: opacity 200ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1); }
+    }
+
+    & [data-align='end'] [data-nui-table-sort] { flex-direction: row-reverse; }
+
+    & th[aria-sort='ascending'], & th[aria-sort='descending'] { color: var(--nui-base-content); }
+    & th[aria-sort='ascending'] [data-up], & th[aria-sort='descending'] [data-down] { opacity: 1; }
+    & th[aria-sort='ascending'] [data-down] { opacity: 0; transform: translateY(-2px); }
+    & th[aria-sort='descending'] [data-up] { opacity: 0; transform: translateY(2px); }
+
+    /* Horizontal overflow fades at the edge that still has content; the region becomes focusable to scroll by keyboard. */
+    & [data-nui-table-scroll] {
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in oklch, var(--nui-base-content) 25%, transparent) transparent;
+        mask-image: linear-gradient(to right, transparent, #000 var(--nui-fade-start, 0px), #000 calc(100% - var(--nui-fade-end, 0px)), transparent);
+
+        &:focus-visible { outline: 2px solid var(--nui-primary); outline-offset: -2px; }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-nui-table] [data-nui-table-sort] path { transition: none; }
+}
+}
+
+/* Some rows selected: the header box fills and carries a drawn bar. Unlayered so it beats the checkbox utilities. */
+[data-nui-table] [data-nui-table-check] input:indeterminate {
+    border-color: var(--nui-primary);
+    background: linear-gradient(var(--nui-primary-content), var(--nui-primary-content)) center / 0.5rem 2px no-repeat, var(--nui-primary);
+    box-shadow: var(--nui-shadow-control);
+}
+
+/*
+ * Data Grid: extends the table galley proof with pinned columns, column resize handles,
+ * inline cell editing triggers, and summary footers.
+ */
+@layer components {
+    [data-nui-datagrid] {
+        & [data-pin='start'] {
+            position: sticky;
+            inset-inline-start: 0;
+            z-index: 2;
+            background: var(--nui-base-100);
+        }
+
+        & [data-pin='end'] {
+            position: sticky;
+            inset-inline-end: 0;
+            z-index: 2;
+            background: var(--nui-base-100);
+        }
+
+        & thead [data-pin] {
+            z-index: 3;
+            background: var(--nui-base-200);
+        }
+
+        & tfoot [data-pin] {
+            z-index: 2;
+            background: var(--nui-base-200);
+        }
+
+        & tfoot td {
+            background: var(--nui-base-200);
+        }
+
+        & tbody tr:hover > [data-pin] {
+            background: color-mix(in oklch, var(--nui-base-100), var(--nui-base-content) 5%);
+        }
+
+        & tbody tr:has([data-nui-table-select]:checked) > [data-pin] {
+            background: color-mix(in oklch, var(--nui-base-100), var(--nui-primary) 8%);
+        }
+
+        & tbody tr:hover .nui-datagrid-edit-trigger {
+            opacity: 1;
+        }
+    }
+
+    /*
+     * Data Grid toolbar controls: share the exact key-cap height (2.25rem) and tactile border
+     * of Filter chips so every tool in the control bar belongs to one visual family.
+     */
+    .nui-datagrid-tool > button,
+    button.nui-datagrid-tool {
+        height: 2.25rem;
+        padding-inline: 0.75rem;
+        font-size: 0.875rem;
+        background: var(--nui-base-100);
+        color: var(--nui-base-content);
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 15%, transparent);
+        border-bottom-width: 3px;
+        border-bottom-color: color-mix(in oklch, var(--nui-base-content) 25%, transparent);
+        box-shadow: var(--nui-shadow);
+
+        &:hover:not(:disabled) {
+            background: var(--nui-base-200);
+            filter: none;
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(1px);
+            scale: 1;
+        }
+    }
+
+    .nui-datagrid-resizer {
+        position: absolute;
+        top: 0.25rem;
+        bottom: 0.25rem;
+        inset-inline-end: 0;
+        width: 0.375rem;
+        cursor: col-resize;
+        touch-action: none;
+        border-radius: 999px;
+        transition: background-color 150ms ease;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0.25rem;
+            bottom: 0.25rem;
+            inset-inline-end: 2px;
+            width: 1px;
+            background: color-mix(in oklch, var(--nui-base-content) 14%, transparent);
+            transition: background-color 150ms ease, width 150ms ease;
+        }
+
+        &:hover::after,
+        &:focus-visible::after {
+            width: 2px;
+            background: var(--nui-primary);
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+}
+
+/*
+ * Dock: a composing stick of key-cap sorts. Items grow in real size (not transform) so
+ * neighbours make room, swelling away from the stick's base. Labels unroll from the item.
+ */
+@layer components {
+    .nui-dock {
+        --nui-dock-size: 2.75rem;
+        width: fit-content;
+        align-items: flex-end;
+        gap: 0.375rem;
+        padding: 0.375rem;
+        background: var(--nui-base-100);
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 14%, transparent);
+        border-bottom-width: 3px;
+        border-bottom-color: color-mix(in oklch, var(--nui-base-content) 24%, transparent);
+        border-radius: calc(var(--nui-radius) + 0.25rem);
+        box-shadow: 0 10px 24px -14px oklch(0% 0 0 / 0.35);
+
+        &[data-size='sm'] { --nui-dock-size: 2.25rem; }
+        &[data-size='lg'] { --nui-dock-size: 3.5rem; }
+    }
+
+    .nui-dock-vertical { align-items: flex-start; }
+
+    .nui-dock-item {
+        --nui-dock-scale: 1;
+        position: relative;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: calc(var(--nui-dock-size) * var(--nui-dock-scale));
+        height: calc(var(--nui-dock-size) * var(--nui-dock-scale));
+        color: var(--nui-base-content);
+        background: var(--nui-base-200);
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 12%, transparent);
+        border-bottom-width: 3px;
+        border-bottom-color: color-mix(in oklch, var(--nui-base-content) 22%, transparent);
+        border-radius: min(var(--nui-radius), calc(var(--nui-dock-size) * 0.3));
+        cursor: pointer;
+        outline: none;
+        transition: width 220ms cubic-bezier(0.16, 1, 0.3, 1), height 220ms cubic-bezier(0.16, 1, 0.3, 1),
+            border-bottom-width 90ms ease-out, translate 90ms ease-out, background-color 150ms ease-out;
+
+        .nui-dock[data-swelling] & { transition-duration: 90ms, 90ms, 90ms, 90ms, 150ms; }
+
+        @media (hover: hover) {
+            &:hover { background: color-mix(in oklch, var(--nui-base-200), var(--nui-base-content) 5%); }
+        }
+        &:active:not([aria-disabled]) { border-bottom-width: 1px; translate: 0 2px; }
+        &:focus-visible { outline: 2px solid var(--nui-primary); outline-offset: 2px; }
+
+        &[aria-disabled] { cursor: not-allowed; opacity: 0.45; }
+    }
+
+    .nui-dock-icon {
+        display: grid;
+        place-items: center;
+        width: 50%;
+        height: 50%;
+
+        & > svg { width: 100% !important; height: 100% !important; }
+    }
+
+    /* Active: a brass dot sits under the sort, like the nick on a piece of type. */
+    .nui-dock-active::after {
+        content: '';
+        position: absolute;
+        inset-inline-start: 50%;
+        bottom: -0.5rem;
+        width: 0.3rem;
+        height: 0.3rem;
+        margin-inline-start: -0.15rem;
+        border-radius: 999px;
+        background: var(--nui-primary);
+    }
+
+    .nui-dock-vertical .nui-dock-active::after {
+        inset-inline-start: -0.55rem;
+        bottom: calc(50% - 0.15rem);
+        margin: 0;
+    }
+
+    .nui-dock-badge {
+        position: absolute;
+        top: -0.35rem;
+        inset-inline-end: -0.35rem;
+        min-width: 1.15rem;
+        height: 1.15rem;
+        padding: 0 0.3rem;
+        display: grid;
+        place-items: center;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        color: var(--nui-danger-content);
+        background: var(--nui-danger);
+        border: 2px solid var(--nui-base-100);
+        border-radius: 999px;
+    }
+
+    .nui-dock-separator {
+        align-self: stretch;
+        width: 1px;
+        margin: 0.375rem 0.125rem;
+        background: color-mix(in oklch, var(--nui-base-content) 16%, transparent);
+
+        .nui-dock-vertical & { width: auto; height: 1px; margin: 0.125rem 0.375rem; }
+    }
+
+    /*
+     * Label: unrolls out of the item it names (clip from the item's edge), text settles in.
+     * --nui-dock-tip-shift nudges it back inside the viewport; data-side="start" flips a vertical label.
+     * Hover opens it only on devices that really hover, so a tap never leaves a stuck label.
+     */
+    .nui-dock-tip {
+        --nui-dock-tip-shift: 0px;
+        position: absolute;
+        bottom: calc(100% + 0.6rem);
+        inset-inline-start: 50%;
+        translate: calc(-50% + var(--nui-dock-tip-shift)) 4px;
+        width: max-content;
+        max-width: 12rem;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.3;
+        color: oklch(95% 0.01 85);
+        background: oklch(23% 0.02 260);
+        border-radius: min(var(--nui-radius), 0.5rem);
+        box-shadow: 0 0 0 1px color-mix(in oklch, var(--nui-base-content) 14%, transparent), 0 8px 20px -8px oklch(0% 0 0 / 0.5);
+        pointer-events: none;
+        opacity: 0;
+        clip-path: inset(100% 0 0 0 round min(var(--nui-radius), 0.5rem));
+        transition: opacity 120ms ease-in, clip-path 120ms ease-in, translate 120ms ease-in;
+
+        .nui-dock-vertical & {
+            bottom: auto;
+            top: 50%;
+            inset-inline-start: calc(100% + 0.6rem);
+            translate: -4px -50%;
+            clip-path: inset(0 100% 0 0 round min(var(--nui-radius), 0.5rem));
+        }
+
+        .nui-dock-vertical &[data-side='start'] {
+            inset-inline-start: auto;
+            inset-inline-end: calc(100% + 0.6rem);
+            translate: 4px -50%;
+            clip-path: inset(0 0 0 100% round min(var(--nui-radius), 0.5rem));
+        }
+
+        .nui-dock-item:focus-visible > & {
+            opacity: 1;
+            translate: calc(-50% + var(--nui-dock-tip-shift)) 0;
+            clip-path: inset(0 round min(var(--nui-radius), 0.5rem));
+            transition: opacity 160ms 80ms ease-out, clip-path 260ms 80ms cubic-bezier(0.16, 1, 0.3, 1), translate 260ms 80ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nui-dock-vertical .nui-dock-item:focus-visible > & { translate: 0 -50%; }
+    }
+
+    @media (hover: hover) {
+        .nui-dock-item:hover > .nui-dock-tip {
+            opacity: 1;
+            translate: calc(-50% + var(--nui-dock-tip-shift)) 0;
+            clip-path: inset(0 round min(var(--nui-radius), 0.5rem));
+            transition: opacity 160ms 80ms ease-out, clip-path 260ms 80ms cubic-bezier(0.16, 1, 0.3, 1), translate 260ms 80ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nui-dock-vertical .nui-dock-item:hover > .nui-dock-tip { translate: 0 -50%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nui-dock-item, .nui-dock-tip, .nui-dock-item:hover > .nui-dock-tip { transition-duration: 1ms !important; }
+    }
+}
+
+@layer components {
+    .nui-dock[data-quiet] .nui-dock-tip { opacity: 0 !important; transition-duration: 1ms !important; }
+}
+
+/*
+ * Steps: each marker is a key cap (thicker bottom edge). Upcoming caps sit low on the tray,
+ * the current cap is raised in primary ink, completed caps are inked solid with a drawn check.
+ * Connectors fill like a rule being inked; a newly opened panel unrolls with the tab morph.
+ */
+.nui-step-marker {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: var(--nui-border-width, 1px) solid var(--color-base-300);
+    border-bottom-width: 3px;
+    border-radius: var(--nui-radius-field);
+    background: var(--color-base-200);
+    color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    transition:
+        background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    & > * {
+        grid-area: 1 / 1;
+    }
+
+    & > svg {
+        width: 1rem;
+        height: 1rem;
+        opacity: 0;
+    }
+}
+
+.nui-step-check path {
+    stroke-dasharray: 16;
+    stroke-dashoffset: 16;
+}
+
+.nui-step-trigger:not(:disabled):hover .nui-step-marker {
+    border-color: color-mix(in oklch, var(--color-primary) 45%, var(--color-base-300));
+}
+
+.nui-step-trigger:not(:disabled):active .nui-step-marker {
+    transform: translateY(1px);
+    border-bottom-width: 2px;
+}
+
+.nui-step-label {
+    color: color-mix(in oklch, var(--color-base-content) 62%, transparent);
+    transition: color 240ms ease;
+}
+
+.nui-step-trigger:disabled .nui-step-label {
+    color: color-mix(in oklch, var(--color-base-content) 48%, transparent);
+}
+
+.nui-step[data-state='current'] {
+    .nui-step-marker {
+        background: var(--color-base-100);
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        box-shadow: var(--nui-shadow-control);
+    }
+
+    .nui-step-label {
+        color: var(--color-base-content);
+    }
+}
+
+.nui-step[data-state='complete'] {
+    .nui-step-marker {
+        background: var(--color-primary);
+        border-color: color-mix(in oklch, var(--color-primary) 70%, black);
+        color: var(--color-primary-content);
+    }
+
+    .nui-step-number {
+        opacity: 0;
+    }
+
+    .nui-step-check {
+        opacity: 1;
+
+        path {
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 320ms 80ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    }
+
+    .nui-step-label {
+        color: var(--color-base-content);
+    }
+}
+
+.nui-step[data-state='error'] {
+    .nui-step-marker {
+        background: var(--color-danger);
+        border-color: color-mix(in oklch, var(--color-danger) 70%, black);
+        color: var(--color-danger-content);
+        animation: nui-step-nudge 360ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nui-step-number {
+        opacity: 0;
+    }
+
+    .nui-step-alert {
+        opacity: 1;
+    }
+
+    .nui-step-label {
+        color: var(--color-danger);
+    }
+}
+
+/* The rule between two markers; its ink fills once the step before it is complete. */
+.nui-step-connector {
+    position: absolute;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--color-base-300);
+}
+
+.nui-step-connector-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-primary);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nui-step[data-state='complete'] .nui-step-connector-fill {
+    transform: none;
+}
+
+.nui-steps[data-orientation='horizontal'] .nui-step-connector {
+    top: calc(1.125rem - 1px);
+    left: calc(2.25rem + 0.5rem);
+    right: 0.5rem;
+    height: 2px;
+}
+
+.nui-steps[data-orientation='vertical'] {
+    .nui-step-connector {
+        top: calc(2.25rem + 0.375rem);
+        bottom: 0.375rem;
+        left: calc(1.125rem - 1px);
+        width: 2px;
+    }
+
+    .nui-step-connector-fill {
+        transform: scaleY(0);
+        transform-origin: center top;
+    }
+
+    .nui-step[data-state='complete'] .nui-step-connector-fill {
+        transform: none;
+    }
+}
+
+/* Phones: a horizontal flow keeps only its markers; the summary line names the current step. */
+@media (width < 40rem) {
+    .nui-steps[data-orientation='horizontal'] .nui-step-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+}
+
+/* Before Alpine runs, a flow without "default" shows only its first panel. */
+.nui-steps[data-auto]:not([data-ready]) .nui-steps-panels > .nui-step-panel ~ .nui-step-panel {
+    display: none;
+}
+
+.nui-steps[data-moved] .nui-step-panel:not([hidden]) {
+    animation: nui-tab-unroll 320ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    & > * {
+        animation: nui-tab-settle 260ms 60ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+}
+
+.nui-steps[data-direction='back'] .nui-step-panel > * {
+    --nui-tab-from: -10px;
+}
+
+@keyframes nui-step-nudge {
+    30% {
+        transform: translateX(-3px);
+    }
+    60% {
+        transform: translateX(2px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-step-marker,
+    .nui-step-connector-fill,
+    .nui-step-check path {
+        transition: none !important;
+    }
+
+    .nui-step[data-state='error'] .nui-step-marker {
+        animation: none;
+    }
+
+    .nui-steps[data-moved] .nui-step-panel:not([hidden]),
+    .nui-steps[data-moved] .nui-step-panel:not([hidden]) > * {
+        animation-duration: 1ms;
+    }
+}
+
+/*
+ * Steps · wizard: the flow becomes one row of arrow segments set in a sunken tray, like sorts
+ * locked up in a chase. Finished segments are inked in primary, the current one in brass.
+ */
+.nui-steps[data-variant='wizard'] {
+    --nui-wizard-point: 0.875rem;
+
+    .nui-steps-list {
+        padding: 0.25rem;
+        border: var(--nui-border-width, 1px) solid var(--color-base-300);
+        border-radius: var(--nui-radius);
+        background: var(--color-base-200);
+        box-shadow: var(--nui-shadow-inset);
+    }
+
+    .nui-step {
+        min-height: 3.5rem;
+        background: transparent;
+        color: color-mix(in oklch, var(--color-base-content) 62%, transparent);
+        clip-path: polygon(0 0, calc(100% - var(--nui-wizard-point)) 0, 100% 50%, calc(100% - var(--nui-wizard-point)) 100%, 0 100%, var(--nui-wizard-point) 50%);
+        transition: background-color 280ms cubic-bezier(0.16, 1, 0.3, 1), color 280ms cubic-bezier(0.16, 1, 0.3, 1);
+
+        & + .nui-step {
+            margin-left: calc(var(--nui-wizard-point) * -1 + 0.25rem);
+        }
+
+        &:first-child {
+            border-radius: calc(var(--nui-radius) - 0.25rem) 0 0 calc(var(--nui-radius) - 0.25rem);
+            clip-path: polygon(0 0, calc(100% - var(--nui-wizard-point)) 0, 100% 50%, calc(100% - var(--nui-wizard-point)) 100%, 0 100%);
+        }
+    }
+
+    .nui-step-connector {
+        display: none;
+    }
+
+    .nui-step-trigger {
+        gap: 0.625rem;
+        padding: 0.5rem calc(var(--nui-wizard-point) + 0.25rem) 0.5rem calc(var(--nui-wizard-point) + 0.5rem);
+        border-radius: 0;
+        color: inherit;
+        outline-offset: -0.375rem;
+    }
+
+    .nui-step:first-child .nui-step-trigger {
+        padding-left: 0.75rem;
+    }
+
+    .nui-step-trigger:not(:disabled):hover {
+        background: color-mix(in oklch, var(--color-base-content) 6%, transparent);
+    }
+
+    .nui-step-marker,
+    .nui-step[data-state] .nui-step-marker {
+        width: 1.625rem;
+        height: 1.625rem;
+        border: 0;
+        border-radius: 999px;
+        background: color-mix(in oklch, currentColor 14%, transparent);
+        color: inherit;
+        box-shadow: none;
+        font-size: 0.75rem;
+        transform: none;
+        animation: none;
+
+        & > svg {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+    }
+
+    .nui-step-label,
+    .nui-step-trigger:disabled .nui-step-label,
+    .nui-step[data-state] .nui-step-label {
+        color: inherit;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .nui-step-description {
+        color: inherit;
+        opacity: 0.78;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .nui-step-trigger:disabled {
+        opacity: 0.7;
+    }
+
+    .nui-step[data-state='complete'] {
+        background: var(--color-primary);
+        color: var(--color-primary-content);
+    }
+
+    .nui-step[data-state='current'] {
+        background: var(--color-secondary);
+        color: var(--color-secondary-content);
+    }
+
+    .nui-step[data-state='error'] {
+        background: var(--color-danger);
+        color: var(--color-danger-content);
+        animation: nui-step-nudge 360ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+}
+
+@media (width < 40rem) {
+    .nui-steps[data-variant='wizard'] .nui-step-trigger {
+        justify-content: center;
+        padding-inline: calc(var(--nui-wizard-point) + 0.25rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-steps[data-variant='wizard'] .nui-step {
+        transition: none;
+        animation: none !important;
+    }
+}
+
+/* Wizard: the last segment closes the row square, with no point. */
+.nui-steps[data-variant='wizard'] .nui-step:last-child {
+    border-top-right-radius: calc(var(--nui-radius) - 0.25rem);
+    border-bottom-right-radius: calc(var(--nui-radius) - 0.25rem);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, var(--nui-wizard-point) 50%);
+
+    .nui-step-trigger {
+        padding-right: 0.75rem;
+    }
+
+    &:first-child {
+        clip-path: none;
+    }
+}
+
+/*
+ * Tree: rows indent one em-quad per level, hairline rules (like a printer's leader) guide each
+ * open branch, and a branch unrolls from its row with the same morph as popovers.
+ */
+.nui-tree {
+    --nui-tree-indent: 1.25rem;
+}
+
+.nui-tree-row {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2.125rem;
+    padding: 0.25rem 0.5rem 0.25rem calc(var(--nui-tree-level) * var(--nui-tree-indent) + 0.25rem);
+    border-radius: var(--nui-radius-field);
+    color: color-mix(in oklch, var(--color-base-content) 82%, transparent);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.nui-tree-row:hover {
+    background: color-mix(in oklch, var(--color-base-content) 5%, transparent);
+    color: var(--color-base-content);
+}
+
+.nui-tree-item:focus-visible > .nui-tree-row {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+.nui-tree-item[aria-selected='true'] > .nui-tree-row {
+    background: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    color: var(--color-base-content);
+    font-weight: 550;
+}
+
+.nui-tree-item[aria-disabled='true'] > .nui-tree-row {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.nui-tree-toggle {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: calc(var(--nui-radius-field) - 2px);
+    color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+
+    & > svg {
+        width: 0.875rem;
+        height: 0.875rem;
+        transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    &:not(.nui-tree-spacer):hover {
+        background: color-mix(in oklch, var(--color-base-content) 8%, transparent);
+        color: var(--color-base-content);
+    }
+}
+
+.nui-tree-item[aria-expanded='true'] > .nui-tree-row > .nui-tree-toggle > svg {
+    transform: rotate(90deg);
+}
+
+.nui-tree-icon {
+    display: inline-grid;
+    flex-shrink: 0;
+    color: color-mix(in oklch, var(--color-base-content) 58%, transparent);
+
+    & > * {
+        grid-area: 1 / 1;
+    }
+
+    & svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+.nui-tree-folder-open,
+.nui-tree-item[aria-expanded='true'] > .nui-tree-row .nui-tree-folder {
+    display: none;
+}
+
+.nui-tree-item[aria-expanded='true'] > .nui-tree-row .nui-tree-folder-open {
+    display: block;
+}
+
+.nui-tree-item[data-branch] > .nui-tree-row > .nui-tree-icon {
+    color: var(--color-primary);
+}
+
+.nui-tree-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nui-tree-badge {
+    margin-left: auto;
+    padding-left: 0.5rem;
+    color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Multiple selection: a small key cap that inks solid when checked and shows a dash when mixed. */
+.nui-tree-check {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--color-base-300);
+    border-bottom-width: 2px;
+    border-radius: 0.25rem;
+    background: var(--color-base-100);
+    color: var(--color-primary-content);
+    transition: background-color 180ms ease, border-color 180ms ease;
+
+    & > svg {
+        grid-area: 1 / 1;
+        width: 0.75rem;
+        height: 0.75rem;
+        opacity: 0;
+    }
+}
+
+.nui-tree-item:is([aria-checked='true'], [aria-checked='mixed']) > .nui-tree-row > .nui-tree-check {
+    background: var(--color-primary);
+    border-color: color-mix(in oklch, var(--color-primary) 70%, black);
+}
+
+.nui-tree-item[aria-checked='true'] > .nui-tree-row .nui-tree-check-on,
+.nui-tree-item[aria-checked='mixed'] > .nui-tree-row .nui-tree-check-mixed {
+    opacity: 1;
+}
+
+/* Branch unroll: rows grow from the parent row; closed branches leave the accessibility tree. */
+.nui-tree-collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+        grid-template-rows 320ms cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s 320ms;
+
+    &[data-open] {
+        grid-template-rows: 1fr;
+        visibility: visible;
+        transition: grid-template-rows 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+}
+
+.nui-tree-group {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 200ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nui-tree-collapse[data-open] > .nui-tree-group {
+    opacity: 1;
+    transform: none;
+    transition-delay: 40ms;
+}
+
+.nui-tree-guides .nui-tree-group::before {
+    content: '';
+    position: absolute;
+    top: 0.125rem;
+    bottom: 0.5rem;
+    left: calc(var(--nui-tree-level) * var(--nui-tree-indent) + 0.875rem - 0.5px);
+    width: 1px;
+    background: var(--color-base-300);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nui-tree-collapse,
+    .nui-tree-collapse[data-open],
+    .nui-tree-group,
+    .nui-tree-toggle > svg {
+        transition: none;
+    }
+}
+
+/*
+ * Device Mockups (phone, tablet, desktop):
+ * Tactile hardware frames in the nUI palette (walnut-black dark hardware or warm newsprint/silver light hardware,
+ * brass indicator accents, key-cap physical buttons, and newsprint/drawer screen surfaces).
+ */
+@layer components {
+    .nui-mockup {
+        --nui-hw-body: oklch(22% 0.015 60);
+        --nui-hw-edge: oklch(34% 0.018 60);
+        --nui-hw-rim: oklch(14% 0.01 60);
+        --nui-hw-deck: oklch(28% 0.016 60);
+        --nui-hw-deck-edge: oklch(18% 0.012 60);
+        --nui-hw-key: oklch(26% 0.015 60);
+        --nui-hw-shadow: 0 2px 4px oklch(0% 0 0 / 0.12), 0 24px 48px -20px oklch(0% 0 0 / 0.45);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0;
+        min-width: 0;
+        max-width: 100%;
+
+        &[data-tone='light'] {
+            --nui-hw-body: oklch(90% 0.012 80);
+            --nui-hw-edge: oklch(97% 0.006 85);
+            --nui-hw-rim: oklch(72% 0.018 75);
+            --nui-hw-deck: oklch(84% 0.014 80);
+            --nui-hw-deck-edge: oklch(68% 0.018 75);
+            --nui-hw-key: oklch(82% 0.015 80);
+        }
+    }
+
+    .nui-mockup-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .nui-mockup-caption {
+        color: color-mix(in oklch, var(--nui-base-content) 68%, transparent);
+        font-size: 0.75rem;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    /* ---------------- Phone Mockup ---------------- */
+    .nui-mockup-phone {
+        --nui-phone-w: 19.5rem;
+        --nui-phone-h: 39rem;
+
+        width: fit-content;
+        max-width: 100%;
+
+        &[data-size='sm'] {
+            --nui-phone-w: 16.5rem;
+            --nui-phone-h: 33rem;
+        }
+
+        &[data-size='lg'] {
+            --nui-phone-w: 22.5rem;
+            --nui-phone-h: 45rem;
+        }
+    }
+
+    .nui-phone-chassis {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: var(--nui-phone-w);
+        max-width: 100%;
+        min-height: var(--nui-phone-h);
+        padding: 0.625rem;
+        border-radius: 2.75rem;
+        background: var(--nui-hw-body);
+        border: 1px solid var(--nui-hw-edge);
+        border-bottom: 3px solid var(--nui-hw-rim);
+        box-shadow:
+            inset 0 0 0 2px oklch(0% 0 0 / 0.28),
+            var(--nui-hw-shadow);
+        transition: width 280ms cubic-bezier(0.16, 1, 0.3, 1), min-height 280ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nui-mockup-phone[data-orientation='landscape'] .nui-phone-chassis {
+        width: var(--nui-phone-h);
+        max-width: 100%;
+        min-height: var(--nui-phone-w);
+        border-radius: 2.375rem;
+    }
+
+    .nui-phone-key {
+        position: absolute;
+        background: var(--nui-hw-key);
+        border: 1px solid var(--nui-hw-rim);
+        border-radius: 999px;
+        pointer-events: none;
+    }
+
+    .nui-phone-key-action { left: -3px; top: 4.75rem; width: 3px; height: 1.25rem; }
+    .nui-phone-key-up     { left: -3px; top: 6.75rem; width: 3px; height: 2.25rem; }
+    .nui-phone-key-down   { left: -3px; top: 9.5rem;  width: 3px; height: 2.25rem; }
+    .nui-phone-key-power  { right: -3px; top: 7.75rem; width: 3px; height: 3.25rem; }
+
+    .nui-mockup-phone[data-orientation='landscape'] {
+        & .nui-phone-key-action { top: -3px; left: 4.75rem; width: 1.25rem; height: 3px; right: auto; bottom: auto; }
+        & .nui-phone-key-up     { top: -3px; left: 6.75rem; width: 2.25rem; height: 3px; right: auto; bottom: auto; }
+        & .nui-phone-key-down   { top: -3px; left: 9.5rem;  width: 2.25rem; height: 3px; right: auto; bottom: auto; }
+        & .nui-phone-key-power  { bottom: -3px; top: auto; left: 7.75rem; right: auto; width: 3.25rem; height: 3px; }
+        & .nui-phone-statusbar  { height: 2rem; padding: 0.125rem 1.5rem 0; }
+        & .nui-phone-island     { top: 0.35rem; width: 4.5rem; height: 1.25rem; }
+        & .nui-phone-notch      { top: 0; width: 5.75rem; height: 1.15rem; }
+        & .nui-phone-punch      { top: 0.4rem; width: 0.75rem; height: 0.75rem; }
+        & .nui-phone-home-pill  { width: 8.5rem; height: 0.25rem; }
+    }
+
+    .nui-phone-screen {
+        position: relative;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 2.125rem;
+        background: var(--nui-base-100);
+        color: var(--nui-base-content);
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 10%, transparent);
+        isolation: isolate;
+    }
+
+    .nui-mockup-phone[data-orientation='landscape'] .nui-phone-screen {
+        border-radius: 1.875rem;
+    }
+
+    .nui-phone-statusbar {
+        position: relative;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: space-between;
+        height: 2.5rem;
+        padding: 0.25rem 1.375rem 0;
+        background: var(--nui-base-100);
+        color: var(--nui-base-content);
+        font-size: 0.75rem;
+        z-index: 2;
+    }
+
+    .nui-phone-time {
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.01em;
+    }
+
+    .nui-phone-camera {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: oklch(12% 0.01 60);
+        color: oklch(45% 0.04 240);
+    }
+
+    .nui-phone-island {
+        top: 0.5rem;
+        width: 5.5rem;
+        height: 1.45rem;
+        padding-right: 0.5rem;
+        justify-content: flex-end;
+        border-radius: 999px;
+        box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0.08);
+    }
+
+    .nui-phone-notch {
+        top: 0;
+        width: 7.25rem;
+        height: 1.4rem;
+        gap: 0.5rem;
+        border-radius: 0 0 0.875rem 0.875rem;
+    }
+
+    .nui-phone-punch {
+        top: 0.55rem;
+        width: 0.85rem;
+        height: 0.85rem;
+        border-radius: 999px;
+    }
+
+    .nui-phone-speaker {
+        width: 2.25rem;
+        height: 0.22rem;
+        border-radius: 999px;
+        background: oklch(26% 0.01 60);
+    }
+
+    .nui-phone-lens {
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 999px;
+        background: radial-gradient(circle at 35% 35%, oklch(65% 0.12 230), oklch(22% 0.04 240) 70%);
+        box-shadow: 0 0 0 1px oklch(100% 0 0 / 0.12);
+    }
+
+    .nui-phone-signals {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        & svg:nth-child(1) { width: 0.9rem; height: 0.65rem; }
+        & svg:nth-child(2) { width: 0.85rem; height: 0.65rem; }
+        & svg:nth-child(3) { width: 1.35rem; height: 0.68rem; }
+    }
+
+    .nui-phone-header {
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--nui-base-300);
+        background: var(--nui-base-100);
+    }
+
+    .nui-phone-viewport {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow: auto;
+        scrollbar-width: thin;
+    }
+
+    .nui-phone-home-bar {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        height: 1.25rem;
+        background: transparent;
+        pointer-events: none;
+    }
+
+    .nui-phone-home-pill {
+        width: 7.25rem;
+        height: 0.275rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--nui-base-content) 75%, transparent);
+    }
+
+    /* ---------------- Tablet Mockup ---------------- */
+    .nui-mockup-tablet {
+        --nui-tablet-w: 42rem;
+        --nui-tablet-h: 29rem;
+
+        width: fit-content;
+        max-width: 100%;
+
+        &[data-size='sm'] {
+            --nui-tablet-w: 34rem;
+            --nui-tablet-h: 24rem;
+        }
+
+        &[data-size='lg'] {
+            --nui-tablet-w: 50rem;
+            --nui-tablet-h: 34rem;
+        }
+    }
+
+    .nui-tablet-chassis {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: var(--nui-tablet-w);
+        max-width: 100%;
+        min-height: var(--nui-tablet-h);
+        padding: 0.875rem;
+        border-radius: 2rem;
+        background: var(--nui-hw-body);
+        border: 1px solid var(--nui-hw-edge);
+        border-bottom: 4px solid var(--nui-hw-rim);
+        box-shadow:
+            inset 0 0 0 2px oklch(0% 0 0 / 0.26),
+            var(--nui-hw-shadow);
+        transition: width 280ms cubic-bezier(0.16, 1, 0.3, 1), min-height 280ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nui-mockup-tablet[data-orientation='portrait'] .nui-tablet-chassis {
+        width: var(--nui-tablet-h);
+        max-width: 100%;
+        min-height: var(--nui-tablet-w);
+    }
+
+    .nui-tablet-stylus {
+        position: absolute;
+        top: -0.55rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: inline-flex;
+        align-items: center;
+        width: min(52%, 13rem);
+        height: 0.45rem;
+        border-radius: 999px;
+        background: oklch(95% 0.01 85);
+        border: 1px solid oklch(72% 0.02 75);
+        box-shadow: 0 1px 2px oklch(0% 0 0 / 0.25);
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .nui-tablet-stylus-tip {
+        width: 0.65rem;
+        height: 100%;
+        background: var(--nui-primary);
+    }
+
+    .nui-tablet-stylus-band {
+        margin-left: auto;
+        margin-right: 0.75rem;
+        width: 0.25rem;
+        height: 100%;
+        background: oklch(78% 0.11 85);
+    }
+
+    .nui-tablet-key {
+        position: absolute;
+        background: var(--nui-hw-key);
+        border: 1px solid var(--nui-hw-rim);
+        border-radius: 999px;
+        pointer-events: none;
+    }
+
+    .nui-tablet-key-power { left: -3px; top: 3.25rem; width: 3px; height: 2rem; }
+    .nui-tablet-key-up    { top: -3px; right: 5.5rem; width: 1.75rem; height: 3px; }
+    .nui-tablet-key-down  { top: -3px; right: 3.25rem; width: 1.75rem; height: 3px; }
+
+    .nui-mockup-tablet[data-orientation='portrait'] {
+        & .nui-tablet-key-power { top: -3px; left: 3.25rem; width: 2rem; height: 3px; right: auto; bottom: auto; }
+        & .nui-tablet-key-up    { right: -3px; top: 5.5rem; width: 3px; height: 1.75rem; left: auto; bottom: auto; }
+        & .nui-tablet-key-down  { right: -3px; top: 7.75rem; width: 3px; height: 1.75rem; left: auto; bottom: auto; }
+    }
+
+    .nui-tablet-camera {
+        position: absolute;
+        top: 0.28rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: grid;
+        place-items: center;
+        width: 0.35rem;
+        height: 0.35rem;
+        border-radius: 999px;
+        background: oklch(12% 0.01 60);
+        pointer-events: none;
+    }
+
+    .nui-tablet-lens {
+        width: 0.22rem;
+        height: 0.22rem;
+        border-radius: 999px;
+        background: oklch(55% 0.1 230);
+    }
+
+    .nui-tablet-screen {
+        position: relative;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        background: var(--nui-base-100);
+        color: var(--nui-base-content);
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 10%, transparent);
+        isolation: isolate;
+    }
+
+    .nui-tablet-statusbar {
+        position: relative;
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: space-between;
+        height: 1.875rem;
+        padding: 0 1rem;
+        background: var(--nui-base-100);
+        color: var(--nui-base-content);
+        font-size: 0.75rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .nui-tablet-datetime {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nui-tablet-multitask {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.25rem 0.4rem;
+        border-radius: 999px;
+
+        & > span {
+            width: 0.22rem;
+            height: 0.22rem;
+            border-radius: 999px;
+            background: color-mix(in oklch, var(--nui-base-content) 38%, transparent);
+        }
+    }
+
+    .nui-tablet-signals {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        & svg:first-of-type { width: 0.85rem; height: 0.65rem; }
+        & svg:last-of-type  { width: 1.35rem; height: 0.68rem; }
+    }
+
+    .nui-tablet-header {
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--nui-base-300);
+        background: var(--nui-base-100);
+    }
+
+    .nui-tablet-viewport {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow: auto;
+        scrollbar-width: thin;
+    }
+
+    .nui-tablet-home-bar {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        height: 1rem;
+        pointer-events: none;
+    }
+
+    .nui-tablet-home-pill {
+        width: 6.5rem;
+        height: 0.25rem;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--nui-base-content) 65%, transparent);
+    }
+
+    /* ---------------- Desktop / Computer Mockup ---------------- */
+    .nui-mockup-desktop {
+        --nui-desktop-w: 48rem;
+        --nui-desktop-h: 24rem;
+
+        width: fit-content;
+        max-width: 100%;
+
+        &[data-size='sm'] {
+            --nui-desktop-w: 36rem;
+            --nui-desktop-h: 19rem;
+        }
+
+        &[data-size='lg'] {
+            --nui-desktop-w: 60rem;
+            --nui-desktop-h: 30rem;
+        }
+    }
+
+    .nui-desktop-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: var(--nui-desktop-w);
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .nui-mockup-desktop[data-variant='laptop'] {
+        padding-inline: 1.25rem;
+    }
+
+    .nui-desktop-lid {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: var(--nui-desktop-h);
+        padding: 0.625rem 0.625rem 0.5rem;
+        border-radius: 1.125rem 1.125rem 0.25rem 0.25rem;
+        background: var(--nui-hw-body);
+        border: 1px solid var(--nui-hw-edge);
+        box-shadow:
+            inset 0 0 0 1px oklch(0% 0 0 / 0.25),
+            var(--nui-hw-shadow);
+    }
+
+    .nui-mockup-desktop[data-variant='monitor'] .nui-desktop-lid {
+        padding-bottom: 0;
+        border-radius: 1.125rem;
+        border-bottom: 3px solid var(--nui-hw-rim);
+        overflow: hidden;
+    }
+
+    .nui-mockup-desktop[data-variant='window'] .nui-desktop-lid {
+        padding: 0;
+        border-radius: var(--nui-radius);
+        background: var(--nui-base-100);
+        border: var(--nui-border-width, 1px) solid var(--nui-base-300);
+        border-bottom: 3px solid color-mix(in oklch, var(--nui-base-content) 22%, transparent);
+        box-shadow: var(--nui-shadow), 0 18px 40px -20px oklch(0% 0 0 / 0.32);
+        overflow: hidden;
+    }
+
+    .nui-desktop-camera {
+        position: absolute;
+        top: 0.2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: grid;
+        place-items: center;
+        width: 0.32rem;
+        height: 0.32rem;
+        border-radius: 999px;
+        background: oklch(10% 0.01 60);
+        pointer-events: none;
+    }
+
+    .nui-desktop-lens {
+        width: 0.18rem;
+        height: 0.18rem;
+        border-radius: 999px;
+        background: oklch(62% 0.12 150);
+    }
+
+    .nui-desktop-screen {
+        position: relative;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        border-radius: 0.625rem;
+        background: var(--nui-base-100);
+        color: var(--nui-base-content);
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 10%, transparent);
+    }
+
+    .nui-mockup-desktop[data-variant='window'] .nui-desktop-screen {
+        border: 0;
+        border-radius: 0;
+    }
+
+    .nui-desktop-chrome {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 0.75rem;
+        min-height: 2.5rem;
+        padding: 0.375rem 0.875rem;
+        background: var(--nui-base-200);
+        border-bottom: 1px solid var(--nui-base-300);
+    }
+
+    .nui-desktop-lights {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .nui-desktop-dot {
+        width: 0.6875rem;
+        height: 0.6875rem;
+        border-radius: 999px;
+        border: 1px solid oklch(0% 0 0 / 0.15);
+        border-bottom-width: 2px;
+    }
+
+    .nui-desktop-dot-close { background: var(--nui-danger); }
+    .nui-desktop-dot-min   { background: var(--nui-warning); }
+    .nui-desktop-dot-max   { background: var(--nui-success); }
+
+    .nui-desktop-address {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        min-width: 0;
+        max-width: 26rem;
+        height: 1.75rem;
+        margin-inline: auto;
+        padding-inline: 0.75rem;
+        border-radius: var(--nui-radius-field);
+        background: var(--nui-field-bg);
+        border: 1px solid var(--nui-field-border);
+        box-shadow: var(--nui-shadow-inset);
+        color: color-mix(in oklch, var(--nui-base-content) 78%, transparent);
+    }
+
+    .nui-desktop-title {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: color-mix(in oklch, var(--nui-base-content) 75%, transparent);
+    }
+
+    .nui-desktop-viewport {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        overflow: auto;
+        scrollbar-width: thin;
+    }
+
+    /* Laptop keyboard base */
+    .nui-desktop-deck {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: calc(100% + 2.5rem);
+        max-width: none;
+        height: 1.125rem;
+        margin-top: -1px;
+        border-radius: 0.1875rem 0.1875rem 0.875rem 0.875rem;
+        background: linear-gradient(to bottom, var(--nui-hw-deck), var(--nui-hw-body));
+        border: 1px solid var(--nui-hw-edge);
+        border-bottom: 3px solid var(--nui-hw-deck-edge);
+        box-shadow: 0 12px 24px -10px oklch(0% 0 0 / 0.4);
+    }
+
+    .nui-desktop-notch {
+        width: 4.5rem;
+        height: 0.325rem;
+        border-radius: 0 0 0.375rem 0.375rem;
+        background: var(--nui-hw-deck-edge);
+    }
+
+    /* Monitor chin & stand */
+    .nui-desktop-chin {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 1.5rem;
+        margin: 0.5rem -0.625rem 0;
+        background: var(--nui-hw-deck);
+        border-top: 1px solid var(--nui-hw-edge);
+    }
+
+    .nui-desktop-led {
+        width: 0.35rem;
+        height: 0.35rem;
+        border-radius: 999px;
+        background: oklch(78% 0.11 85);
+        box-shadow: 0 0 6px oklch(78% 0.11 85 / 0.6);
+    }
+
+    .nui-desktop-stand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nui-desktop-neck {
+        width: 4.25rem;
+        height: 2.25rem;
+        background: linear-gradient(to bottom, var(--nui-hw-rim), var(--nui-hw-deck));
+        border-inline: 1px solid var(--nui-hw-edge);
+        clip-path: polygon(12% 0, 88% 0, 100% 100%, 0 100%);
+    }
+
+    .nui-desktop-foot {
+        width: 9.5rem;
+        height: 0.5rem;
+        border-radius: 0.375rem 0.375rem 0.1875rem 0.1875rem;
+        background: var(--nui-hw-deck);
+        border: 1px solid var(--nui-hw-edge);
+        border-bottom: 3px solid var(--nui-hw-deck-edge);
+        box-shadow: 0 6px 14px -6px oklch(0% 0 0 / 0.35);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nui-phone-chassis,
+        .nui-tablet-chassis {
+            transition: none;
+        }
+    }
+
+    /* ---------------- Questionnaire ---------------- */
+    .nui-questionnaire-option {
+        position: relative;
+        display: flex !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: var(--nui-radius-field);
+        border: var(--nui-field-border-width, 1px) solid var(--nui-base-300);
+        background-color: var(--nui-base-100);
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+
+        &:hover {
+            border-color: color-mix(in oklch, var(--nui-base-content) 35%, transparent);
+            background-color: color-mix(in oklch, var(--nui-base-content) 4%, var(--nui-base-100));
+        }
+
+        &:has(:focus-visible) {
+            outline: 2px solid var(--nui-primary);
+            outline-offset: 2px;
+        }
+
+        &:has(:checked),
+        &[data-checked='true'],
+        &.is-checked {
+            border-color: var(--nui-primary) !important;
+            background-color: color-mix(in oklch, var(--nui-primary) 10%, var(--nui-base-100)) !important;
+            box-shadow: var(--nui-shadow-control) !important;
+        }
+
+        & > label {
+            display: flex !important;
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 0 !important;
+            align-items: flex-start !important;
+            gap: 0.75rem !important;
+            padding: 0.875rem 1rem !important;
+            margin: 0 !important;
+            cursor: pointer !important;
+        }
+
+        & > label > span:last-child {
+            display: flex !important;
+            flex-direction: column !important;
+            flex: 1 1 0% !important;
+            min-width: 0 !important;
+            width: 100% !important;
+            cursor: pointer !important;
+        }
+    }
+
+    .nui-questionnaire-scale-btn {
+        background-color: var(--nui-base-100) !important;
+        color: var(--nui-base-content) !important;
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 22%, transparent) !important;
+        border-bottom: 2px solid color-mix(in oklch, var(--nui-base-content) 32%, transparent) !important;
+        box-shadow: var(--nui-shadow) !important;
+        font-weight: 600 !important;
+        border-radius: var(--nui-radius-field) !important;
+        transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 100ms ease !important;
+
+        &:hover:not(:disabled) {
+            background-color: var(--nui-base-200) !important;
+            border-color: color-mix(in oklch, var(--nui-base-content) 40%, transparent) !important;
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(1px) !important;
+        }
+
+        &[aria-pressed='true'],
+        &[data-selected='true'],
+        &.is-selected {
+            background-color: var(--nui-primary) !important;
+            color: var(--nui-primary-content) !important;
+            border-color: var(--nui-primary) !important;
+            border-bottom: 2px solid color-mix(in oklch, var(--nui-primary) 70%, black) !important;
+            box-shadow: var(--nui-shadow-control) !important;
+            font-weight: 700 !important;
+        }
+
+        &[aria-pressed='true']:hover:not(:disabled),
+        &[data-selected='true']:hover:not(:disabled),
+        &.is-selected:hover:not(:disabled) {
+            background-color: var(--nui-primary) !important;
+            color: var(--nui-primary-content) !important;
+        }
+    }
+}
+/* Rich text typography stays inside the editor, independent of the surrounding page. */
+.nui-rich-text [role='toolbar'] button[aria-pressed='true'] {
+    background: var(--nui-primary);
+    color: var(--nui-primary-content);
+    border-color: var(--nui-primary);
+}
+
+.nui-rich-text .nui-rich-text-content {
+    cursor: text;
+    min-height: 14rem;
+    max-height: 32rem;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    padding: 1.25rem;
+    color: var(--nui-base-content);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.75;
+    outline: none;
+    caret-color: var(--nui-primary);
+    scrollbar-color: var(--nui-field-border) transparent;
+
+    > :first-child { margin-top: 0; }
+    > :last-child { margin-bottom: 0; }
+    p { margin: 0.65em 0; }
+    h2, h3 {
+        margin: 1.2em 0 0.4em;
+        font-family: inherit;
+        font-weight: 700;
+        line-height: 1.35;
+        letter-spacing: normal;
+        text-transform: none;
+    }
+    h2 { font-size: 1.5em; }
+    h3 { font-size: 1.2em; }
+    ul, ol { margin: 0.75em 0; padding-inline-start: 1.5em; }
+    ul { list-style: disc; }
+    ol { list-style: decimal; }
+    li { margin: 0.2em 0; }
+    li p { margin: 0; }
+    blockquote {
+        margin: 1em 0;
+        padding: 0.75em 1em;
+        background: var(--nui-base-200);
+        border: 1px solid var(--nui-field-border);
+        border-radius: var(--nui-radius-field);
+        font-style: italic;
+    }
+    a { color: var(--nui-primary); text-decoration: underline; text-underline-offset: 0.2em; }
+    pre {
+        margin: 1em 0;
+        padding: 1em;
+        overflow-x: auto;
+        white-space: pre;
+        background: var(--nui-base-200);
+        border-radius: var(--nui-radius-field);
+        font-size: 0.875em;
+    }
+    code { font-family: ui-monospace, monospace; }
+    :not(pre) > code { padding: 0.1em 0.3em; background: var(--nui-base-200); border-radius: 0.2em; }
+    hr { margin: 1.25em 0; border-color: var(--nui-field-border); }
+    ::selection { background: color-mix(in oklch, var(--nui-primary) 22%, transparent); }
+    p.is-editor-empty:first-child::before {
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+        color: color-mix(in oklch, var(--nui-base-content) 65%, transparent);
+    }
+    &[aria-disabled='true'] { cursor: not-allowed; }
+}
+
+
+/*
+ * Chart cards. Marks arrive once, like ink taking to the sheet: rings draw round, bars rise
+ * from the baseline, areas wipe in from the left. Reduced motion shows the final state at once.
+ */
+@layer components {
+    .nui-ring { animation: nui-ring-draw 900ms var(--nui-ring-delay, 0ms) cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .nui-chart-bar { transform-origin: bottom; animation: nui-bar-rise 620ms var(--nui-bar-delay, 0ms) cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .nui-chart-draw { animation: nui-chart-wipe 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .nui-chart-tip { animation: nui-settle 160ms cubic-bezier(0.16, 1, 0.3, 1); }
+    /* Bar list: each row is a key-cap compartment; the bar is brass ink pressed into it, with a darker bottom edge like the cap. */
+    .nui-bar-list-row { border: 1px solid color-mix(in oklch, var(--nui-base-content) 12%, transparent); border-bottom: 2px solid color-mix(in oklch, var(--nui-base-content) 22%, transparent); border-radius: min(var(--nui-radius-field), 0.5rem); background: var(--nui-base-200); }
+    .nui-bar-list-bar { background: color-mix(in oklab, var(--nui-chart-3) 30%, var(--nui-base-200)); box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--nui-chart-3) 55%, var(--nui-base-200)); transform-origin: left; animation: nui-bar-grow 620ms var(--nui-bar-delay, 0ms) cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .nui-bar-list-metric { font-family: var(--nui-font-display, inherit); font-weight: var(--nui-font-display-weight, 600); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; color: color-mix(in oklch, var(--nui-base-content) 60%, transparent); }
+    .nui-bar-list-tabs .nui-tabs-list { margin-inline: 0.25rem; }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nui-ring, .nui-chart-bar, .nui-chart-draw, .nui-chart-tip, .nui-bar-list-bar { animation: none; }
+    }
+}
+
+@keyframes nui-ring-draw { from { stroke-dasharray: 0 100; } }
+@keyframes nui-bar-rise { from { transform: scaleY(0); } }
+@keyframes nui-bar-grow { from { transform: scaleX(0); } }
+@keyframes nui-chart-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 -2% 0 0); } }
+
+@layer components {
+    /* Headline figure of a chart card, set like a wood-type numeral when the app provides a display face. */
+    .nui-chart-figure { font-family: var(--nui-font-display, inherit); font-weight: var(--nui-font-display-weight, 600); letter-spacing: 0.01em; }
+}
+
+@layer components {
+    /* Earnings: each column is a key-cap track (the period's room); brass ink fills what was earned. */
+    .nui-earnings-track {
+        border: 1px solid color-mix(in oklch, var(--nui-base-content) 10%, transparent);
+        border-bottom: 2px solid color-mix(in oklch, var(--nui-base-content) 20%, transparent);
+        border-radius: min(var(--nui-radius-field), 0.5rem);
+        background: var(--nui-base-200);
+        cursor: crosshair;
+    }
+    .nui-earnings-bar {
+        border-radius: min(var(--nui-radius-field), 0.4rem);
+        background: var(--nui-chart-3);
+        box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--nui-chart-3) 70%, black), inset 0 1px 0 color-mix(in oklab, var(--nui-chart-3) 70%, white);
+        transform-origin: bottom;
+        transition: opacity 150ms ease-out;
+        animation: nui-bar-rise 620ms var(--nui-bar-delay, 0ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Funnel: one ink across stages (height carries the count); a halo band echoes the flow. */
+    .nui-funnel-band { fill: var(--nui-chart-1); }
+    .nui-funnel-halo { fill: color-mix(in oklch, var(--nui-chart-1) 16%, transparent); }
+    .nui-funnel-draw { animation: nui-chart-wipe 1000ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nui-earnings-bar, .nui-funnel-draw { animation: none; }
+    }
+}
+
+@layer components {
+    /* Orders: stacked status columns; the top segment carries the 4px rounded data-end. */
+    .nui-orders-stack { transform-origin: bottom; animation: nui-bar-rise 620ms var(--nui-bar-delay, 0ms) cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .nui-orders-stack > :last-child { border-radius: 4px 4px 0 0; }
+    @media (prefers-reduced-motion: reduce) { .nui-orders-stack { animation: none; } }
+}
